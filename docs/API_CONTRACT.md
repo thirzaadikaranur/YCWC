@@ -302,6 +302,50 @@ Response error auth (401):
 
 ---
 
+## 10. `GET /api/user/preferences` & `PATCH /api/user/preferences`
+
+Preferensi akun disimpan di `user_metadata` Supabase Auth (lihat
+`SETTINGS.md`). Ditambahkan ke kontrak ini karena frontend memakainya.
+
+**Response `GET` (200):**
+```ts
+{
+  displayName: string;
+  showDiagnosticPrompt: boolean;    // default true
+  defaultQuizQuestionCount: number; // default 5
+}
+```
+
+**Request `PATCH`:** boleh sebagian field:
+```ts
+{
+  displayName?: string;
+  showDiagnosticPrompt?: boolean;
+  defaultQuizQuestionCount?: number; // 1-20
+}
+```
+
+**Response `PATCH` (200):** objek preferensi lengkap (bentuk sama dengan GET).
+
+---
+
+## 11. `POST /api/user/delete-account`
+
+Menghapus seluruh data user (topics, sessions, understanding_map,
+score_history, learning_profile) lalu akun Supabase Auth-nya. Dipicu dari
+Zona Sensitif di halaman Pengaturan setelah user mengetik ulang emailnya.
+
+**Request:** tidak perlu body.
+
+**Response (200):**
+```ts
+{
+  success: true;
+}
+```
+
+---
+
 ## Catatan untuk Frontend (Mock Data)
 
 Saat backend belum siap, buat file `lib/mockApi.ts` yang meniru bentuk

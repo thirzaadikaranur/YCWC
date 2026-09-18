@@ -1,0 +1,652 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Masuk atau buat akun ReverseTutor untuk mulai belajar dengan cara yang lebih personal.">
+    <title>Masuk | ReverseTutor</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="tokens.css">
+    <style>
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+      }
+
+      html {
+        min-width: 320px;
+        background: var(--color-bg);
+      }
+
+      body {
+        min-width: 320px;
+        min-height: 100dvh;
+        margin: 0;
+        background: var(--color-bg);
+        color: var(--color-surface);
+        font-family: var(--font-body);
+        -webkit-font-smoothing: antialiased;
+        text-rendering: optimizeLegibility;
+      }
+
+      button,
+      input {
+        font: inherit;
+      }
+
+      button,
+      a {
+        -webkit-tap-highlight-color: transparent;
+      }
+
+      button {
+        cursor: pointer;
+      }
+
+      button:disabled {
+        cursor: wait;
+      }
+
+      .page-shell {
+        position: relative;
+        display: grid;
+        min-height: 100dvh;
+        place-items: center;
+        padding: clamp(28px, 6vh, 68px) 20px 24px;
+        isolation: isolate;
+        overflow-x: hidden;
+      }
+
+      .page-shell::before,
+      .page-shell::after {
+        position: absolute;
+        z-index: -1;
+        display: block;
+        border: 1px solid rgba(245, 243, 238, 0.07);
+        border-radius: 50%;
+        content: "";
+        pointer-events: none;
+      }
+
+      .page-shell::before {
+        width: min(74vw, 760px);
+        aspect-ratio: 1;
+        top: -44%;
+        right: -22%;
+      }
+
+      .page-shell::after {
+        width: min(48vw, 500px);
+        aspect-ratio: 1;
+        bottom: -35%;
+        left: -24%;
+        border-color: rgba(232, 84, 46, 0.12);
+      }
+
+      .auth-layout {
+        display: flex;
+        width: min(100%, 448px);
+        flex-direction: column;
+        align-items: stretch;
+        gap: 18px;
+      }
+
+      .brand-lockup {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        color: var(--color-surface);
+      }
+
+      .brand-logo {
+        display: block;
+        width: 48px;
+        height: 48px;
+        flex: 0 0 auto;
+        border: 1px solid rgba(245, 243, 238, 0.12);
+        border-radius: 14px;
+        object-fit: cover;
+        box-shadow: 0 8px 18px rgba(8, 10, 28, 0.2);
+      }
+
+      .brand-name {
+        font-family: var(--font-display);
+        font-size: 1.42rem;
+        font-weight: 600;
+        letter-spacing: -0.025em;
+      }
+
+      .auth-card {
+        position: relative;
+        padding: clamp(24px, 5vw, 36px);
+        overflow: hidden;
+        border: 1px solid rgba(245, 243, 238, 0.2);
+        border-radius: var(--radius-card);
+        background: var(--color-surface);
+        box-shadow: var(--shadow-card);
+        color: var(--color-ink);
+      }
+
+      .auth-card::before {
+        position: absolute;
+        top: 0;
+        left: 36px;
+        width: 64px;
+        height: 4px;
+        border-radius: 0 0 5px 5px;
+        background: var(--color-accent);
+        content: "";
+      }
+
+      .auth-intro {
+        margin-bottom: 24px;
+      }
+
+      .auth-intro h1 {
+        max-width: 12ch;
+        margin: 0 0 10px;
+        font-family: var(--font-display);
+        font-size: clamp(2rem, 7vw, 2.62rem);
+        font-weight: 600;
+        letter-spacing: -0.045em;
+        line-height: 1.03;
+      }
+
+      .auth-intro p {
+        max-width: 36ch;
+        margin: 0;
+        color: var(--color-ink-muted);
+        font-size: 0.88rem;
+        line-height: 1.55;
+      }
+
+      .mode-tabs {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 4px;
+        margin-bottom: 22px;
+        padding: 4px;
+        border: 1px solid rgba(46, 51, 88, 0.12);
+        border-radius: calc(var(--radius-control) + 4px);
+        background: var(--color-surface-muted);
+      }
+
+      .mode-tab {
+        min-height: 42px;
+        padding: 9px 14px;
+        border: 1px solid transparent;
+        border-radius: var(--radius-control);
+        background: transparent;
+        color: var(--color-ink-muted);
+        font-size: 0.84rem;
+        font-weight: 600;
+        transition: background-color 160ms ease, color 160ms ease, box-shadow 160ms ease;
+      }
+
+      .mode-tab:hover {
+        color: var(--color-ink);
+      }
+
+      .mode-tab[aria-selected="true"] {
+        background: var(--color-bg);
+        box-shadow: 0 4px 12px rgba(27, 31, 59, 0.16);
+        color: var(--color-surface);
+      }
+
+      .form-message {
+        display: flex;
+        align-items: flex-start;
+        gap: 9px;
+        margin: 0 0 16px;
+        padding: 11px 12px;
+        border: 1px solid rgba(193, 68, 60, 0.3);
+        border-radius: var(--radius-control);
+        background: rgba(193, 68, 60, 0.09);
+        color: var(--color-danger);
+        font-size: 0.78rem;
+        font-weight: 600;
+        line-height: 1.45;
+      }
+
+      .form-message[hidden] {
+        display: none;
+      }
+
+      .message-icon {
+        display: grid;
+        width: 17px;
+        height: 17px;
+        flex: 0 0 auto;
+        place-items: center;
+        border: 1.5px solid currentColor;
+        border-radius: 50%;
+        font-size: 0.67rem;
+        line-height: 1;
+      }
+
+      .form-panel[hidden] {
+        display: none;
+      }
+
+      .form-panel {
+        margin: 0;
+      }
+
+      .field-stack {
+        display: grid;
+        gap: 17px;
+      }
+
+      .field {
+        display: grid;
+        gap: 7px;
+      }
+
+      .field label {
+        color: var(--color-ink);
+        font-size: 0.78rem;
+        font-weight: 600;
+      }
+
+      .field input {
+        width: 100%;
+        min-height: 48px;
+        padding: 12px 14px;
+        border: 1px solid rgba(46, 51, 88, 0.24);
+        border-radius: var(--radius-control);
+        outline: none;
+        background: var(--color-surface-bright);
+        color: var(--color-ink);
+        font-size: 0.88rem;
+        transition: border-color 160ms ease, box-shadow 160ms ease, background-color 160ms ease;
+      }
+
+      .field input::placeholder {
+        color: #858797;
+      }
+
+      .field input:hover {
+        border-color: rgba(46, 51, 88, 0.42);
+      }
+
+      .field input:focus {
+        border-color: var(--color-accent);
+        background: var(--color-surface-bright);
+        box-shadow: 0 0 0 3px rgba(232, 84, 46, 0.16);
+      }
+
+      .form-panel small {
+        display: block;
+        margin-top: -9px;
+        color: var(--color-ink-muted);
+        font-size: 0.7rem;
+        line-height: 1.45;
+      }
+
+      .form-actions {
+        display: grid;
+        gap: 15px;
+        margin-top: 22px;
+      }
+
+      .forgot-link {
+        justify-self: start;
+        color: var(--color-ink-muted);
+        font-size: 0.76rem;
+        text-underline-offset: 3px;
+        transition: color 160ms ease;
+      }
+
+      .forgot-link:hover,
+      .forgot-link:focus-visible {
+        color: var(--color-accent);
+      }
+
+      .primary-action {
+        display: inline-flex;
+        min-height: 50px;
+        align-items: center;
+        justify-content: center;
+        gap: 9px;
+        width: 100%;
+        padding: 12px 18px;
+        border: 1px solid transparent;
+        border-radius: var(--radius-control);
+        background: var(--color-accent);
+        color: var(--color-on-accent);
+        font-size: 0.86rem;
+        font-weight: 700;
+        transition: transform 160ms ease, background-color 160ms ease, box-shadow 160ms ease;
+      }
+
+      .primary-action:hover:not(:disabled) {
+        background: var(--color-accent-hover);
+        box-shadow: 0 8px 18px rgba(232, 84, 46, 0.2);
+        transform: translateY(-1px);
+      }
+
+      .primary-action:active:not(:disabled) {
+        transform: translateY(0);
+      }
+
+      .primary-action:disabled {
+        opacity: 0.82;
+      }
+
+      .button-loading {
+        display: inline-flex;
+        align-items: center;
+        gap: 9px;
+      }
+
+      .button-loading[hidden],
+      .button-label[hidden] {
+        display: none;
+      }
+
+      .button-spinner {
+        width: 15px;
+        height: 15px;
+        border: 2px solid rgba(27, 31, 59, 0.28);
+        border-top-color: var(--color-on-accent);
+        border-radius: 50%;
+        animation: spin 700ms linear infinite;
+      }
+
+      .state-preview {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        padding: 0 4px;
+        color: rgba(245, 243, 238, 0.58);
+        font-size: 0.68rem;
+        line-height: 1.4;
+      }
+
+      .state-preview-label {
+        white-space: nowrap;
+      }
+
+      .state-buttons {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: flex-end;
+        gap: 5px;
+      }
+
+      .state-button {
+        padding: 5px 8px;
+        border: 1px solid rgba(245, 243, 238, 0.18);
+        border-radius: 999px;
+        background: transparent;
+        color: rgba(245, 243, 238, 0.7);
+        font-size: 0.66rem;
+        transition: border-color 160ms ease, background-color 160ms ease, color 160ms ease;
+      }
+
+      .state-button:hover,
+      .state-button[aria-pressed="true"] {
+        border-color: var(--color-accent);
+        background: rgba(232, 84, 46, 0.14);
+        color: var(--color-surface);
+      }
+
+      .auth-footer {
+        margin: 0;
+        color: rgba(245, 243, 238, 0.46);
+        font-size: 0.68rem;
+        text-align: center;
+      }
+
+      :focus-visible {
+        outline: 3px solid rgba(232, 84, 46, 0.68);
+        outline-offset: 3px;
+      }
+
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+
+      @media (max-width: 520px) {
+        .page-shell {
+          align-items: start;
+          padding-top: 32px;
+        }
+
+        .auth-layout {
+          margin: auto 0;
+        }
+
+        .auth-card {
+          padding: 27px 20px 22px;
+          border-radius: 20px;
+        }
+
+        .auth-intro {
+          margin-bottom: 21px;
+        }
+
+        .auth-intro h1 {
+          font-size: 2.18rem;
+        }
+
+        .state-preview {
+          align-items: flex-start;
+          flex-direction: column;
+          gap: 7px;
+        }
+
+        .state-buttons {
+          justify-content: flex-start;
+        }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        *,
+        *::before,
+        *::after {
+          scroll-behavior: auto !important;
+          transition-duration: 0.01ms !important;
+          animation-duration: 0.01ms !important;
+          animation-iteration-count: 1 !important;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="page-shell">
+      <main class="auth-layout">
+        <div class="brand-lockup" aria-label="ReverseTutor">
+          <img class="brand-logo" src="Logo.png" alt="" width="48" height="48">
+          <span class="brand-name">ReverseTutor</span>
+        </div>
+
+        <section class="auth-card" aria-labelledby="auth-title">
+          <div class="auth-intro">
+            <h1 id="auth-title">Masuk ke ruang belajarmu</h1>
+            <p id="auth-description">Lanjutkan sesi belajar dan lihat bagian yang sudah kamu pahami.</p>
+          </div>
+
+          <div class="mode-tabs" role="tablist" aria-label="Pilihan akses akun">
+            <button class="mode-tab" id="login-tab" type="button" role="tab" aria-selected="true" aria-controls="login-panel" data-auth-mode="login">Masuk</button>
+            <button class="mode-tab" id="signup-tab" type="button" role="tab" aria-selected="false" aria-controls="signup-panel" data-auth-mode="signup">Daftar</button>
+          </div>
+
+          <p class="form-message" id="form-error" role="alert" aria-live="polite" hidden>
+            <span class="message-icon" aria-hidden="true">!</span>
+            <span id="form-error-text">Email atau password salah</span>
+          </p>
+
+          <form class="form-panel" id="login-panel" role="tabpanel" aria-labelledby="login-tab" aria-describedby="form-error" data-auth-form="login">
+            <div class="field-stack">
+              <div class="field">
+                <label for="login-email">Email</label>
+                <input id="login-email" name="email" type="email" autocomplete="email" placeholder="nama@contoh.id" required>
+              </div>
+
+              <div class="field">
+                <label for="login-password">Password</label>
+                <input id="login-password" name="password" type="password" autocomplete="current-password" placeholder="Masukkan password" required>
+              </div>
+            </div>
+
+            <div class="form-actions">
+              <a class="forgot-link" id="forgot-password" href="#reset-password">Lupa password?</a>
+              <button class="primary-action" id="submit-button" type="submit" aria-busy="false">
+                <span class="button-label">Masuk</span>
+                <span class="button-loading" hidden>
+                  <span class="button-spinner" aria-hidden="true"></span>
+                  <span class="button-loading-label">Memeriksa...</span>
+                </span>
+              </button>
+            </div>
+          </form>
+
+          <form class="form-panel" id="signup-panel" role="tabpanel" aria-labelledby="signup-tab" aria-describedby="form-error" data-auth-form="signup" hidden>
+            <div class="field-stack">
+              <div class="field">
+                <label for="signup-name">Nama tampilan</label>
+                <input id="signup-name" name="displayName" type="text" autocomplete="name" placeholder="Contoh: Naya Putri" required>
+              </div>
+
+              <div class="field">
+                <label for="signup-email">Email</label>
+                <input id="signup-email" name="email" type="email" autocomplete="email" placeholder="nama@contoh.id" required>
+              </div>
+
+              <div class="field">
+                <label for="signup-password">Password</label>
+                <input id="signup-password" name="password" type="password" autocomplete="new-password" placeholder="Buat password" required>
+              </div>
+
+              <small>Gunakan password yang mudah kamu ingat dan sulit ditebak orang lain.</small>
+            </div>
+
+            <div class="form-actions">
+              <button class="primary-action" type="submit" aria-busy="false">
+                <span class="button-label">Buat Akun</span>
+                <span class="button-loading" hidden>
+                  <span class="button-spinner" aria-hidden="true"></span>
+                  <span class="button-loading-label">Membuat akun...</span>
+                </span>
+              </button>
+            </div>
+          </form>
+        </section>
+
+        <aside class="state-preview" aria-label="Kontrol pratinjau keadaan halaman">
+          <span class="state-preview-label">Pratinjau visual</span>
+          <div class="state-buttons" role="group" aria-label="Pilih keadaan form">
+            <button class="state-button" type="button" data-preview-state="default" aria-pressed="true">Normal</button>
+            <button class="state-button" type="button" data-preview-state="error" aria-pressed="false">Kesalahan</button>
+            <button class="state-button" type="button" data-preview-state="loading" aria-pressed="false">Memuat</button>
+          </div>
+        </aside>
+
+        <p class="auth-footer">ReverseTutor, 2026</p>
+      </main>
+    </div>
+
+    <script>
+      (() => {
+        "use strict";
+
+        const modeTabs = Array.from(document.querySelectorAll("[data-auth-mode]"));
+        const forms = Array.from(document.querySelectorAll("[data-auth-form]"));
+        const stateButtons = Array.from(document.querySelectorAll("[data-preview-state]"));
+        const title = document.querySelector("#auth-title");
+        const description = document.querySelector("#auth-description");
+        const errorMessage = document.querySelector("#form-error");
+        const errorText = document.querySelector("#form-error-text");
+        let activeMode = "login";
+        let activeState = "default";
+
+        const copy = {
+          login: {
+            title: "Masuk ke ruang belajarmu",
+            description: "Lanjutkan sesi belajar dan lihat bagian yang sudah kamu pahami.",
+            error: "Email atau password salah",
+            loading: "Memeriksa..."
+          },
+          signup: {
+            title: "Buat ruang belajarmu",
+            description: "Mulai belajar dengan menemukan bagian yang masih perlu kamu perkuat.",
+            error: "Email sudah terdaftar. Coba masuk atau gunakan email lain.",
+            loading: "Membuat akun..."
+          }
+        };
+
+        function updateSubmitButton() {
+          const activeForm = document.querySelector(`[data-auth-form="${activeMode}"]`);
+          const button = activeForm.querySelector(".primary-action");
+          const label = button.querySelector(".button-label");
+          const loading = button.querySelector(".button-loading");
+          const loadingLabel = button.querySelector(".button-loading-label");
+          const isLoading = activeState === "loading";
+
+          button.disabled = isLoading;
+          button.setAttribute("aria-busy", String(isLoading));
+          label.hidden = isLoading;
+          loading.hidden = !isLoading;
+          loadingLabel.textContent = copy[activeMode].loading;
+        }
+
+        function updateState(nextState) {
+          activeState = nextState;
+          const isError = nextState === "error";
+
+          stateButtons.forEach((button) => {
+            button.setAttribute("aria-pressed", String(button.dataset.previewState === nextState));
+          });
+
+          errorText.textContent = copy[activeMode].error;
+          errorMessage.hidden = !isError;
+          updateSubmitButton();
+        }
+
+        function updateMode(nextMode) {
+          activeMode = nextMode;
+          const modeCopy = copy[nextMode];
+
+          modeTabs.forEach((tab) => {
+            const isActive = tab.dataset.authMode === nextMode;
+            tab.setAttribute("aria-selected", String(isActive));
+          });
+
+          forms.forEach((form) => {
+            form.hidden = form.dataset.authForm !== nextMode;
+          });
+
+          title.textContent = modeCopy.title;
+          description.textContent = modeCopy.description;
+          errorText.textContent = modeCopy.error;
+          updateSubmitButton();
+        }
+
+        modeTabs.forEach((tab) => {
+          tab.addEventListener("click", () => updateMode(tab.dataset.authMode));
+        });
+
+        stateButtons.forEach((button) => {
+          button.addEventListener("click", () => updateState(button.dataset.previewState));
+        });
+
+        forms.forEach((form) => {
+          form.addEventListener("submit", (event) => {
+            event.preventDefault();
+            updateState("loading");
+          });
+        });
+
+        updateMode(activeMode);
+        updateState(activeState);
+      })();
+    </script>
+  </body>
+</html>

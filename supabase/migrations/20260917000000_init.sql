@@ -112,19 +112,37 @@ drop policy if exists "Users manage own sessions" on public.sessions;
 create policy "Users manage own sessions" on public.sessions
   for all to authenticated
   using (auth.uid() = user_id)
-  with check (auth.uid() = user_id);
+  with check (
+    auth.uid() = user_id
+    and exists (
+      select 1 from public.topics t
+      where t.id = topic_id and t.user_id = auth.uid()
+    )
+  );
 
 drop policy if exists "Users manage own understanding_map" on public.understanding_map;
 create policy "Users manage own understanding_map" on public.understanding_map
   for all to authenticated
   using (auth.uid() = user_id)
-  with check (auth.uid() = user_id);
+  with check (
+    auth.uid() = user_id
+    and exists (
+      select 1 from public.topics t
+      where t.id = topic_id and t.user_id = auth.uid()
+    )
+  );
 
 drop policy if exists "Users manage own score_history" on public.score_history;
 create policy "Users manage own score_history" on public.score_history
   for all to authenticated
   using (auth.uid() = user_id)
-  with check (auth.uid() = user_id);
+  with check (
+    auth.uid() = user_id
+    and exists (
+      select 1 from public.topics t
+      where t.id = topic_id and t.user_id = auth.uid()
+    )
+  );
 
 drop policy if exists "Users manage own learning_profile" on public.learning_profile;
 create policy "Users manage own learning_profile" on public.learning_profile

@@ -1,0 +1,1456 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Mulai sesi belajar baru bersama ReverseTutor.">
+    <title>Chat Baru | ReverseTutor</title>
+    <link rel="stylesheet" href="tokens.css">
+    <style>
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+      }
+
+      :root {
+        --sidebar-width: 286px;
+        --header-height: 70px;
+        --composer-space: 164px;
+      }
+
+      html,
+      body {
+        min-width: 320px;
+        min-height: 100%;
+        margin: 0;
+        background: var(--color-bg);
+      }
+
+      body {
+        min-height: 100dvh;
+        overflow: hidden;
+        color: var(--color-surface);
+        font-family: var(--font-body);
+        -webkit-font-smoothing: antialiased;
+        text-rendering: optimizeLegibility;
+      }
+
+      button,
+      input {
+        font: inherit;
+      }
+
+      button,
+      a {
+        -webkit-tap-highlight-color: transparent;
+      }
+
+      button {
+        cursor: pointer;
+      }
+
+      button:disabled {
+        cursor: not-allowed;
+      }
+
+      a {
+        color: inherit;
+      }
+
+      .sr-only {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        white-space: nowrap;
+        border: 0;
+      }
+
+      .icon {
+        display: block;
+        width: 18px;
+        height: 18px;
+        flex: 0 0 auto;
+      }
+
+      .app-shell {
+        min-height: 100dvh;
+      }
+
+      .sidebar {
+        position: fixed;
+        z-index: 40;
+        inset: 0 auto 0 0;
+        display: flex;
+        width: var(--sidebar-width);
+        flex-direction: column;
+        border-right: 1px solid rgba(245, 243, 238, 0.1);
+        background: var(--color-bg);
+        transition: transform 220ms ease;
+      }
+
+      .sidebar-top {
+        padding: 20px 16px 14px;
+      }
+
+      .new-topic-button {
+        display: flex;
+        min-height: 46px;
+        align-items: center;
+        justify-content: center;
+        gap: 9px;
+        width: 100%;
+        padding: 11px 14px;
+        border: 1px solid transparent;
+        border-radius: var(--radius-control);
+        background: var(--color-accent);
+        color: var(--color-on-accent);
+        font-size: 0.82rem;
+        font-weight: 700;
+        transition: background-color 160ms ease, box-shadow 160ms ease, transform 160ms ease;
+      }
+
+      .new-topic-button:hover {
+        background: var(--color-accent-hover);
+        box-shadow: 0 8px 18px rgba(232, 84, 46, 0.2);
+        transform: translateY(-1px);
+      }
+
+      .new-topic-button:active {
+        transform: translateY(0);
+      }
+
+      .new-topic-button .icon {
+        width: 17px;
+        height: 17px;
+        stroke-width: 2.3;
+      }
+
+      .sidebar-scroll {
+        min-height: 0;
+        flex: 1;
+        overflow-y: auto;
+        scrollbar-color: var(--color-border) transparent;
+        scrollbar-width: thin;
+      }
+
+      .sidebar-nav {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 4px;
+        margin: 0 16px 15px;
+        padding: 4px;
+        border: 1px solid rgba(245, 243, 238, 0.1);
+        border-radius: calc(var(--radius-control) + 4px);
+        background: rgba(245, 243, 238, 0.05);
+      }
+
+      .sidebar-tab {
+        min-height: 37px;
+        padding: 8px 7px;
+        border: 1px solid transparent;
+        border-radius: var(--radius-control);
+        background: transparent;
+        color: rgba(245, 243, 238, 0.58);
+        font-size: 0.71rem;
+        font-weight: 600;
+        white-space: nowrap;
+        transition: background-color 160ms ease, color 160ms ease;
+      }
+
+      .sidebar-tab:hover {
+        color: var(--color-surface);
+      }
+
+      .sidebar-tab[aria-selected="true"] {
+        background: rgba(245, 243, 238, 0.11);
+        color: var(--color-surface);
+      }
+
+      .sidebar-view[hidden] {
+        display: none;
+      }
+
+      .search-wrap {
+        position: relative;
+        margin: 0 16px 21px;
+      }
+
+      .search-wrap .icon {
+        position: absolute;
+        top: 50%;
+        left: 12px;
+        width: 16px;
+        height: 16px;
+        color: rgba(245, 243, 238, 0.55);
+        pointer-events: none;
+        transform: translateY(-50%);
+      }
+
+      .search-input {
+        width: 100%;
+        min-height: 38px;
+        padding: 9px 12px 9px 36px;
+        border: 1px solid rgba(245, 243, 238, 0.13);
+        border-radius: 999px;
+        outline: none;
+        background: rgba(245, 243, 238, 0.055);
+        color: var(--color-surface);
+        font-size: 0.74rem;
+        transition: border-color 160ms ease, background-color 160ms ease, box-shadow 160ms ease;
+      }
+
+      .search-input::placeholder {
+        color: rgba(245, 243, 238, 0.46);
+      }
+
+      .search-input:hover {
+        border-color: rgba(245, 243, 238, 0.25);
+      }
+
+      .search-input:focus {
+        border-color: var(--color-accent);
+        background: rgba(245, 243, 238, 0.08);
+        box-shadow: 0 0 0 3px rgba(232, 84, 46, 0.15);
+      }
+
+      .topic-section {
+        padding: 0 10px 20px;
+      }
+
+      .section-label {
+        display: block;
+        margin: 0 7px 8px;
+        color: rgba(245, 243, 238, 0.43);
+        font-size: 0.66rem;
+        font-weight: 600;
+        letter-spacing: 0.01em;
+      }
+
+      .topic-list {
+        display: grid;
+        gap: 3px;
+      }
+
+      .topic-item {
+        display: grid;
+        grid-template-columns: 8px minmax(0, 1fr);
+        gap: 10px;
+        width: 100%;
+        padding: 10px 10px;
+        border: 1px solid transparent;
+        border-radius: 13px;
+        background: transparent;
+        color: var(--color-surface);
+        text-align: left;
+        transition: background-color 160ms ease, border-color 160ms ease;
+      }
+
+      .topic-item:hover {
+        border-color: rgba(245, 243, 238, 0.08);
+        background: rgba(245, 243, 238, 0.07);
+      }
+
+      .topic-indicator {
+        width: 7px;
+        height: 7px;
+        margin-top: 5px;
+        border-radius: 50%;
+        background: rgba(245, 243, 238, 0.3);
+        box-shadow: 0 0 0 3px rgba(245, 243, 238, 0.035);
+      }
+
+      .topic-indicator.is-success {
+        background: var(--color-success);
+        box-shadow: 0 0 0 3px rgba(124, 152, 133, 0.13);
+      }
+
+      .topic-indicator.is-warning {
+        background: var(--color-warning);
+        box-shadow: 0 0 0 3px rgba(201, 169, 89, 0.13);
+      }
+
+      .topic-indicator.is-danger {
+        background: var(--color-danger);
+        box-shadow: 0 0 0 3px rgba(193, 68, 60, 0.13);
+      }
+
+      .topic-info {
+        display: grid;
+        min-width: 0;
+        gap: 5px;
+      }
+
+      .topic-title {
+        overflow: hidden;
+        font-size: 0.76rem;
+        font-weight: 600;
+        line-height: 1.35;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      .topic-meta {
+        display: flex;
+        align-items: center;
+        gap: 7px;
+        color: rgba(245, 243, 238, 0.45);
+        font-size: 0.64rem;
+        line-height: 1;
+      }
+
+      .session-badge {
+        padding: 4px 6px;
+        border: 1px solid rgba(245, 243, 238, 0.1);
+        border-radius: 5px;
+        background: rgba(245, 243, 238, 0.055);
+        color: rgba(245, 243, 238, 0.66);
+        font-size: 0.6rem;
+        font-weight: 600;
+      }
+
+      .search-empty {
+        margin: 0 7px;
+        color: rgba(245, 243, 238, 0.52);
+        font-size: 0.7rem;
+        line-height: 1.5;
+      }
+
+      .search-empty[hidden] {
+        display: none;
+      }
+
+      .profile-preview {
+        margin: 0 16px;
+        padding: 14px;
+        border: 1px solid rgba(245, 243, 238, 0.1);
+        border-radius: var(--radius-control);
+        background: rgba(245, 243, 238, 0.055);
+      }
+
+      .profile-preview h2 {
+        margin: 0 0 8px;
+        color: var(--color-surface);
+        font-family: var(--font-display);
+        font-size: 1.05rem;
+        font-weight: 600;
+        letter-spacing: -0.02em;
+      }
+
+      .profile-preview p {
+        margin: 0;
+        color: rgba(245, 243, 238, 0.56);
+        font-size: 0.7rem;
+        line-height: 1.55;
+      }
+
+      .sidebar-footer {
+        flex: 0 0 auto;
+        padding: 13px 14px 16px;
+        border-top: 1px solid rgba(245, 243, 238, 0.12);
+      }
+
+      .user-settings-link {
+        display: grid;
+        grid-template-columns: 32px minmax(0, 1fr) 20px;
+        gap: 10px;
+        align-items: center;
+        width: 100%;
+        padding: 9px 8px;
+        border: 1px solid transparent;
+        border-radius: 13px;
+        text-decoration: none;
+        transition: background-color 160ms ease, border-color 160ms ease;
+      }
+
+      .user-settings-link:hover {
+        border-color: rgba(245, 243, 238, 0.08);
+        background: rgba(245, 243, 238, 0.07);
+      }
+
+      .user-avatar {
+        display: grid;
+        width: 32px;
+        height: 32px;
+        place-items: center;
+        border-radius: 50%;
+        background: var(--color-accent);
+        color: var(--color-on-accent);
+        font-size: 0.64rem;
+        font-weight: 800;
+        letter-spacing: 0.02em;
+      }
+
+      .user-copy {
+        display: grid;
+        min-width: 0;
+        gap: 3px;
+      }
+
+      .user-name,
+      .user-role {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      .user-name {
+        color: var(--color-surface);
+        font-size: 0.72rem;
+        font-weight: 700;
+        line-height: 1.25;
+      }
+
+      .user-role {
+        color: rgba(245, 243, 238, 0.48);
+        font-size: 0.63rem;
+        line-height: 1.25;
+      }
+
+      .settings-icon {
+        width: 17px;
+        height: 17px;
+        color: rgba(245, 243, 238, 0.57);
+      }
+
+      .drawer-backdrop {
+        position: fixed;
+        z-index: 35;
+        inset: 0;
+        display: none;
+        border: 0;
+        background: rgba(8, 10, 28, 0.58);
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 220ms ease;
+      }
+
+      .workspace {
+        position: relative;
+        min-height: 100dvh;
+        margin-left: var(--sidebar-width);
+        overflow: hidden;
+      }
+
+      .app-header {
+        position: relative;
+        z-index: 10;
+        display: flex;
+        height: var(--header-height);
+        align-items: center;
+        padding: 0 28px;
+        border-bottom: 1px solid rgba(245, 243, 238, 0.08);
+      }
+
+      .header-brand {
+        display: inline-flex;
+        align-items: center;
+        gap: 9px;
+        min-width: 0;
+      }
+
+      .hamburger-button {
+        display: grid;
+        width: 34px;
+        height: 34px;
+        margin-right: 5px;
+        place-items: center;
+        border: 1px solid transparent;
+        border-radius: 9px;
+        background: transparent;
+        color: rgba(245, 243, 238, 0.8);
+        transition: background-color 160ms ease, color 160ms ease;
+      }
+
+      .hamburger-button:hover {
+        background: rgba(245, 243, 238, 0.08);
+        color: var(--color-surface);
+      }
+
+      .hamburger-button .icon {
+        width: 19px;
+        height: 19px;
+      }
+
+      .header-logo {
+        display: block;
+        width: 27px;
+        height: 27px;
+        border: 1px solid rgba(245, 243, 238, 0.12);
+        border-radius: 8px;
+        object-fit: cover;
+      }
+
+      .wordmark {
+        overflow: hidden;
+        color: rgba(245, 243, 238, 0.9);
+        font-family: var(--font-display);
+        font-size: 1.02rem;
+        font-weight: 600;
+        letter-spacing: -0.02em;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      .welcome-stage {
+        display: grid;
+        min-height: calc(100dvh - var(--header-height));
+        place-items: center;
+        padding: 30px 24px calc(var(--composer-space) + 30px);
+      }
+
+      .welcome-content {
+        display: flex;
+        width: min(100%, 720px);
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        transform: translateY(-2vh);
+      }
+
+      .welcome-symbol {
+        width: 30px;
+        height: 30px;
+        margin-bottom: 19px;
+        color: var(--color-accent);
+      }
+
+      .welcome-content h1 {
+        max-width: 17ch;
+        margin: 0;
+        color: var(--color-surface);
+        font-family: var(--font-display);
+        font-size: clamp(2.1rem, 5vw, 3.35rem);
+        font-weight: 600;
+        letter-spacing: -0.05em;
+        line-height: 1.05;
+      }
+
+      .welcome-note {
+        max-width: 42ch;
+        margin: 17px 0 27px;
+        color: rgba(245, 243, 238, 0.56);
+        font-size: 0.83rem;
+        line-height: 1.55;
+      }
+
+      .quick-starts {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 8px;
+        max-width: 620px;
+      }
+
+      .quick-chip {
+        min-height: 40px;
+        padding: 9px 14px;
+        border: 1px solid rgba(245, 243, 238, 0.16);
+        border-radius: 999px;
+        background: rgba(245, 243, 238, 0.055);
+        color: rgba(245, 243, 238, 0.8);
+        font-size: 0.74rem;
+        font-weight: 600;
+        transition: background-color 160ms ease, border-color 160ms ease, color 160ms ease, transform 160ms ease;
+      }
+
+      .quick-chip:hover,
+      .quick-chip[aria-pressed="true"] {
+        border-color: rgba(245, 243, 238, 0.32);
+        background: rgba(245, 243, 238, 0.11);
+        color: var(--color-surface);
+        transform: translateY(-1px);
+      }
+
+      .quick-chip.is-featured {
+        border-color: var(--color-accent);
+        background: rgba(232, 84, 46, 0.1);
+        color: #F3AD9B;
+      }
+
+      .quick-chip.is-featured:hover,
+      .quick-chip.is-featured[aria-pressed="true"] {
+        background: rgba(232, 84, 46, 0.18);
+        color: var(--color-surface);
+      }
+
+      .composer-dock {
+        position: fixed;
+        z-index: 20;
+        right: 0;
+        bottom: 0;
+        left: var(--sidebar-width);
+        padding: 0 22px 22px;
+        background: linear-gradient(to bottom, rgba(27, 31, 59, 0), rgba(27, 31, 59, 0.96) 35%);
+      }
+
+      .composer-inner {
+        width: min(100%, 820px);
+        margin: 0 auto;
+      }
+
+      .attachment-preview {
+        width: min(100%, 650px);
+        margin: 0 auto 8px;
+      }
+
+      .attachment-preview[hidden] {
+        display: none;
+      }
+
+      .attachment-chip {
+        display: grid;
+        grid-template-columns: 28px minmax(0, 1fr) 28px;
+        gap: 10px;
+        align-items: center;
+        padding: 9px 10px;
+        border: 1px solid rgba(245, 243, 238, 0.16);
+        border-radius: 13px;
+        background: rgba(46, 51, 88, 0.92);
+      }
+
+      .attachment-chip[data-state="success"] {
+        border-color: rgba(124, 152, 133, 0.42);
+        background: rgba(66, 92, 78, 0.55);
+      }
+
+      .attachment-chip[data-state="error"] {
+        border-color: rgba(193, 68, 60, 0.62);
+        background: rgba(102, 45, 50, 0.72);
+      }
+
+      .attachment-leading {
+        position: relative;
+        display: grid;
+        width: 28px;
+        height: 28px;
+        place-items: center;
+        border-radius: 8px;
+        background: rgba(245, 243, 238, 0.11);
+        color: var(--color-surface);
+      }
+
+      .attachment-chip[data-state="success"] .attachment-leading {
+        background: rgba(124, 152, 133, 0.24);
+        color: #B3C8B8;
+      }
+
+      .attachment-chip[data-state="error"] .attachment-leading {
+        background: rgba(193, 68, 60, 0.28);
+        color: #F2B2A8;
+      }
+
+      .attachment-doc-icon,
+      .attachment-check-icon,
+      .attachment-error-icon,
+      .attachment-spinner {
+        display: none;
+      }
+
+      .attachment-chip[data-state="parsing"] .attachment-doc-icon,
+      .attachment-chip[data-state="success"] .attachment-check-icon,
+      .attachment-chip[data-state="error"] .attachment-error-icon {
+        display: block;
+      }
+
+      .attachment-chip[data-state="parsing"] .attachment-spinner {
+        position: absolute;
+        right: 1px;
+        bottom: 1px;
+        display: block;
+        width: 10px;
+        height: 10px;
+        border-width: 1.5px;
+      }
+
+      .attachment-spinner {
+        width: 14px;
+        height: 14px;
+        border: 2px solid rgba(245, 243, 238, 0.28);
+        border-top-color: var(--color-accent);
+        border-radius: 50%;
+        animation: spin 700ms linear infinite;
+      }
+
+      .attachment-copy {
+        min-width: 0;
+      }
+
+      .attachment-file-line {
+        display: flex;
+        min-width: 0;
+        align-items: baseline;
+        gap: 8px;
+      }
+
+      .attachment-name {
+        overflow: hidden;
+        color: var(--color-surface);
+        font-size: 0.72rem;
+        font-weight: 700;
+        line-height: 1.3;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      .attachment-size {
+        flex: 0 0 auto;
+        color: rgba(245, 243, 238, 0.52);
+        font-size: 0.64rem;
+      }
+
+      .attachment-status {
+        overflow: hidden;
+        margin: 3px 0 0;
+        color: rgba(245, 243, 238, 0.62);
+        font-size: 0.65rem;
+        line-height: 1.4;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      .attachment-chip[data-state="success"] .attachment-status {
+        color: #B3C8B8;
+      }
+
+      .attachment-chip[data-state="error"] .attachment-status {
+        color: #F2B2A8;
+        white-space: normal;
+      }
+
+      .remove-attachment {
+        display: grid;
+        width: 28px;
+        height: 28px;
+        place-items: center;
+        border: 1px solid transparent;
+        border-radius: 8px;
+        background: transparent;
+        color: rgba(245, 243, 238, 0.62);
+        font-size: 1.15rem;
+        line-height: 1;
+        transition: background-color 160ms ease, color 160ms ease;
+      }
+
+      .remove-attachment:hover {
+        background: rgba(245, 243, 238, 0.12);
+        color: var(--color-surface);
+      }
+
+      .attachment-note {
+        margin: 6px 4px 0;
+        color: rgba(245, 243, 238, 0.48);
+        font-size: 0.62rem;
+        line-height: 1.45;
+      }
+
+      .attachment-note[hidden] {
+        display: none;
+      }
+
+      .composer-form {
+        display: grid;
+        grid-template-columns: 42px minmax(0, 1fr) 40px;
+        gap: 8px;
+        align-items: center;
+        min-height: 58px;
+        padding: 8px 9px 8px 10px;
+        border: 1px solid rgba(245, 243, 238, 0.19);
+        border-radius: 20px;
+        background: rgba(245, 243, 238, 0.1);
+        box-shadow: 0 13px 34px rgba(8, 10, 28, 0.2);
+        backdrop-filter: blur(16px);
+      }
+
+      .composer-form:focus-within {
+        border-color: rgba(232, 84, 46, 0.68);
+        box-shadow: 0 0 0 3px rgba(232, 84, 46, 0.12), 0 13px 34px rgba(8, 10, 28, 0.2);
+      }
+
+      .composer-icon-button,
+      .send-button {
+        display: grid;
+        place-items: center;
+        width: 40px;
+        height: 40px;
+        border: 1px solid transparent;
+        border-radius: 50%;
+        transition: background-color 160ms ease, color 160ms ease, transform 160ms ease;
+      }
+
+      .composer-icon-button {
+        background: transparent;
+        color: rgba(245, 243, 238, 0.7);
+      }
+
+      .composer-icon-button:hover {
+        background: rgba(245, 243, 238, 0.11);
+        color: var(--color-surface);
+      }
+
+      .composer-icon-button .icon {
+        width: 20px;
+        height: 20px;
+        stroke-width: 1.9;
+      }
+
+      .composer-input {
+        width: 100%;
+        min-width: 0;
+        padding: 10px 0;
+        border: 0;
+        outline: 0;
+        background: transparent;
+        color: var(--color-surface);
+        font-size: 0.8rem;
+      }
+
+      .composer-input::placeholder {
+        color: rgba(245, 243, 238, 0.48);
+      }
+
+      .send-button {
+        background: var(--color-accent);
+        color: var(--color-on-accent);
+      }
+
+      .send-button:hover {
+        background: var(--color-accent-hover);
+        transform: translateY(-1px);
+      }
+
+      .send-button:active {
+        transform: translateY(0);
+      }
+
+      .send-button .icon {
+        width: 18px;
+        height: 18px;
+        stroke-width: 2.2;
+      }
+
+      .prototype-controls {
+        position: fixed;
+        z-index: 25;
+        top: 82px;
+        right: 20px;
+        width: min(238px, calc(100vw - 32px));
+        border: 1px solid rgba(245, 243, 238, 0.13);
+        border-radius: 14px;
+        background: rgba(27, 31, 59, 0.9);
+        box-shadow: 0 12px 32px rgba(8, 10, 28, 0.22);
+        backdrop-filter: blur(14px);
+      }
+
+      .prototype-controls summary {
+        padding: 10px 12px;
+        color: rgba(245, 243, 238, 0.75);
+        cursor: pointer;
+        font-size: 0.68rem;
+        font-weight: 700;
+        list-style: none;
+      }
+
+      .prototype-controls summary::-webkit-details-marker {
+        display: none;
+      }
+
+      .prototype-controls summary::after {
+        float: right;
+        color: rgba(245, 243, 238, 0.45);
+        content: "+";
+        font-size: 1rem;
+        font-weight: 400;
+        line-height: 0.8;
+      }
+
+      .prototype-controls[open] summary {
+        border-bottom: 1px solid rgba(245, 243, 238, 0.1);
+      }
+
+      .prototype-controls[open] summary::after {
+        content: "−";
+      }
+
+      .control-group {
+        display: grid;
+        gap: 7px;
+        padding: 10px 12px 12px;
+      }
+
+      .control-group + .control-group {
+        padding-top: 0;
+      }
+
+      .control-label {
+        color: rgba(245, 243, 238, 0.44);
+        font-size: 0.6rem;
+        font-weight: 600;
+      }
+
+      .control-options {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 5px;
+      }
+
+      .control-button {
+        padding: 5px 7px;
+        border: 1px solid rgba(245, 243, 238, 0.16);
+        border-radius: 7px;
+        background: transparent;
+        color: rgba(245, 243, 238, 0.66);
+        font-size: 0.6rem;
+        transition: border-color 160ms ease, background-color 160ms ease, color 160ms ease;
+      }
+
+      .control-button:hover,
+      .control-button[aria-pressed="true"] {
+        border-color: var(--color-accent);
+        background: rgba(232, 84, 46, 0.14);
+        color: var(--color-surface);
+      }
+
+      :focus-visible {
+        outline: 3px solid rgba(232, 84, 46, 0.72);
+        outline-offset: 3px;
+      }
+
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+
+      body.is-mobile-preview .drawer-backdrop {
+        display: block;
+      }
+
+      body.is-mobile-preview .sidebar {
+        width: min(86vw, 320px);
+        transform: translateX(-102%);
+      }
+
+      body.is-mobile-preview .workspace,
+      body.is-mobile-preview .composer-dock {
+        margin-left: 0;
+      }
+
+      body.is-mobile-preview .composer-dock {
+        left: 0;
+      }
+
+      body.is-mobile-preview.drawer-open .sidebar {
+        transform: translateX(0);
+        box-shadow: 18px 0 42px rgba(8, 10, 28, 0.28);
+      }
+
+      body.is-mobile-preview.drawer-open .drawer-backdrop {
+        opacity: 1;
+        pointer-events: auto;
+      }
+
+      body.is-mobile-preview .drawer-backdrop {
+        opacity: 0;
+        pointer-events: none;
+      }
+
+      body.is-mobile-preview.drawer-open .drawer-backdrop {
+        opacity: 1;
+        pointer-events: auto;
+      }
+
+      @media (max-width: 767px) {
+        body {
+          overflow: hidden;
+        }
+
+        .sidebar {
+          width: min(86vw, 320px);
+          transform: translateX(-102%);
+          box-shadow: 18px 0 42px rgba(8, 10, 28, 0.28);
+        }
+
+        body.drawer-open .sidebar {
+          transform: translateX(0);
+        }
+
+        .drawer-backdrop {
+          display: block;
+        }
+
+        body.drawer-open .drawer-backdrop {
+          opacity: 1;
+          pointer-events: auto;
+        }
+
+        .workspace {
+          margin-left: 0;
+        }
+
+        .app-header {
+          height: 62px;
+          padding: 0 16px;
+        }
+
+        .welcome-stage {
+          min-height: calc(100dvh - 62px);
+          padding: 24px 18px calc(var(--composer-space) + 26px);
+        }
+
+        .welcome-content {
+          transform: translateY(-1vh);
+        }
+
+        .welcome-content h1 {
+          max-width: 14ch;
+          font-size: clamp(2rem, 10vw, 2.7rem);
+        }
+
+        .welcome-note {
+          max-width: 35ch;
+          margin-top: 15px;
+          margin-bottom: 23px;
+          font-size: 0.76rem;
+        }
+
+        .quick-starts {
+          gap: 7px;
+        }
+
+        .quick-chip {
+          min-height: 38px;
+          padding: 8px 11px;
+          font-size: 0.69rem;
+        }
+
+        .composer-dock {
+          left: 0;
+          padding: 0 12px 12px;
+        }
+
+        .composer-form {
+          grid-template-columns: 38px minmax(0, 1fr) 38px;
+          min-height: 54px;
+          border-radius: 18px;
+        }
+
+        .composer-icon-button,
+        .send-button {
+          width: 36px;
+          height: 36px;
+        }
+
+        .prototype-controls {
+          top: 70px;
+          right: 12px;
+        }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        *,
+        *::before,
+        *::after {
+          scroll-behavior: auto !important;
+          transition-duration: 0.01ms !important;
+          animation-duration: 0.01ms !important;
+          animation-iteration-count: 1 !important;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="sidebar" id="sidebar" aria-label="Navigasi ReverseTutor">
+        <div class="sidebar-top">
+          <button class="new-topic-button" id="new-topic-button" type="button">
+            <svg class="icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M12 5v14M5 12h14" stroke="currentColor" stroke-linecap="round">
+              </path>
+            </svg>
+            <span>Topik Baru</span>
+          </button>
+        </div>
+
+        <div class="sidebar-scroll">
+          <nav class="sidebar-nav" role="tablist" aria-label="Navigasi belajar">
+            <button class="sidebar-tab" id="topics-tab" type="button" role="tab" aria-selected="true" aria-controls="topics-view" data-sidebar-tab="topics">Topik</button>
+            <button class="sidebar-tab" id="profile-tab" type="button" role="tab" aria-selected="false" aria-controls="profile-view" data-sidebar-tab="profile">Profil Belajar</button>
+          </nav>
+
+          <div class="sidebar-view" id="topics-view" role="tabpanel" aria-labelledby="topics-tab" data-sidebar-view="topics">
+            <div class="search-wrap">
+              <svg class="icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <circle cx="10.8" cy="10.8" r="6.3" stroke="currentColor" stroke-width="1.8">
+                </circle>
+                <path d="m16 16 4.4 4.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+                </path>
+              </svg>
+              <label class="sr-only" for="topic-search">Cari topik</label>
+              <input class="search-input" id="topic-search" type="search" placeholder="Cari topik" autocomplete="off">
+            </div>
+
+            <section class="topic-section" aria-labelledby="recent-topics-label">
+              <span class="section-label" id="recent-topics-label">Terbaru</span>
+              <div class="topic-list" id="topic-list">
+                <button class="topic-item" type="button" data-topic-name="Hukum Newton dan Gaya">
+                  <span class="topic-indicator is-success" aria-label="Pemahaman kuat"></span>
+                  <span class="topic-info">
+                    <span class="topic-title">Hukum Newton dan Gaya</span>
+                    <span class="topic-meta"><span class="session-badge">4 sesi</span><span>2 jam lalu</span></span>
+                  </span>
+                </button>
+
+                <button class="topic-item" type="button" data-topic-name="Pergerakan Nasional Indonesia">
+                  <span class="topic-indicator is-warning" aria-label="Perlu diulang"></span>
+                  <span class="topic-info">
+                    <span class="topic-title">Pergerakan Nasional Indonesia</span>
+                    <span class="topic-meta"><span class="session-badge">2 sesi</span><span>kemarin</span></span>
+                  </span>
+                </button>
+
+                <button class="topic-item" type="button" data-topic-name="Sistem Pernapasan Manusia">
+                  <span class="topic-indicator" aria-label="Belum ada data pemahaman"></span>
+                  <span class="topic-info">
+                    <span class="topic-title">Sistem Pernapasan Manusia</span>
+                    <span class="topic-meta"><span class="session-badge">1 sesi</span><span>3 hari lalu</span></span>
+                  </span>
+                </button>
+
+                <button class="topic-item" type="button" data-topic-name="Turunan Fungsi Aljabar">
+                  <span class="topic-indicator is-success" aria-label="Pemahaman kuat"></span>
+                  <span class="topic-info">
+                    <span class="topic-title">Turunan Fungsi Aljabar</span>
+                    <span class="topic-meta"><span class="session-badge">6 sesi</span><span>5 hari lalu</span></span>
+                  </span>
+                </button>
+              </div>
+              <p class="search-empty" id="search-empty" hidden>Nggak ketemu. Coba kata kunci lain, atau mulai topik baru.</p>
+            </section>
+          </div>
+
+          <div class="sidebar-view" id="profile-view" role="tabpanel" aria-labelledby="profile-tab" data-sidebar-view="profile" hidden>
+            <div class="profile-preview">
+              <h2>Profil Belajar</h2>
+              <p>Temuan lintas topik akan muncul setelah kamu menyelesaikan beberapa sesi "Jelaskan ke saya".</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="sidebar-footer">
+          <a class="user-settings-link" href="#settings" aria-label="Buka pengaturan">
+            <span class="user-avatar" aria-hidden="true">AR</span>
+            <span class="user-copy">
+              <span class="user-name">Aditya Rahman</span>
+              <span class="user-role">Pelajar · SMA Kelas XI</span>
+            </span>
+            <svg class="settings-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <circle cx="12" cy="12" r="3.3" stroke="currentColor" stroke-width="1.6">
+              </circle>
+              <path d="M12 2.8v2.1M12 19.1v2.1M21.2 12h-2.1M4.9 12H2.8M18.5 5.5 17 7M7 17l-1.5 1.5M18.5 18.5 17 17M7 7 5.5 5.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round">
+              </path>
+            </svg>
+          </a>
+        </div>
+      </aside>
+
+      <button class="drawer-backdrop" id="drawer-backdrop" type="button" aria-label="Tutup menu"></button>
+
+      <main class="workspace">
+        <header class="app-header">
+          <div class="header-brand">
+            <button class="hamburger-button" id="sidebar-toggle" type="button" aria-label="Buka menu" aria-controls="sidebar" aria-expanded="false">
+              <svg class="icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+                </path>
+              </svg>
+            </button>
+            <img class="header-logo" src="Logo.png" alt="" width="27" height="27">
+            <span class="wordmark">ReverseTutor</span>
+          </div>
+        </header>
+
+        <section class="welcome-stage" aria-labelledby="welcome-title">
+          <div class="welcome-content">
+            <svg class="welcome-symbol" viewBox="0 0 40 40" fill="none" aria-hidden="true">
+              <path d="M20 3.5c1.1 10.7 5.8 15.4 16.5 16.5C25.8 21.1 21.1 25.8 20 36.5 18.9 25.8 14.2 21.1 3.5 20 14.2 18.9 18.9 14.2 20 3.5Z" fill="currentColor">
+              </path>
+              <circle cx="32.5" cy="7.5" r="2" fill="currentColor">
+              </circle>
+            </svg>
+            <h1 id="welcome-title">Ada yang mau kamu pelajari hari ini?</h1>
+            <p class="welcome-note">Mulai dari materi, pertanyaan, atau cara menjelaskan versimu.</p>
+
+            <div class="quick-starts" role="group" aria-label="Mulai belajar dengan cepat">
+              <button class="quick-chip" type="button" data-compose-mode="summary" aria-pressed="false">Ringkas materi</button>
+              <button class="quick-chip" type="button" data-compose-mode="quiz" aria-pressed="false">Buat kuis</button>
+              <button class="quick-chip is-featured" type="button" data-compose-mode="reverse" aria-pressed="false">Jelaskan ke saya</button>
+              <button class="quick-chip" type="button" data-compose-mode="question" aria-pressed="false">Tanya bebas</button>
+            </div>
+          </div>
+        </section>
+      </main>
+
+      <section class="composer-dock" aria-label="Mulai percakapan">
+        <div class="composer-inner">
+          <div class="attachment-preview" id="attachment-preview" hidden>
+            <div class="attachment-chip" id="attachment-chip" data-state="parsing">
+              <span class="attachment-leading" aria-hidden="true">
+                <svg class="attachment-doc-icon" viewBox="0 0 24 24" fill="none">
+                  <path d="M6.5 3.5h7l4 4v13h-11v-17Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round">
+                  </path>
+                  <path d="M13.5 3.5v4h4M9 12h6M9 15.5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+                  </path>
+                </svg>
+                <svg class="attachment-check-icon" viewBox="0 0 24 24" fill="none">
+                  <path d="m5.5 12.5 4.2 4.2L18.8 7.8" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                  </path>
+                </svg>
+                <span class="attachment-error-icon">!</span>
+                <span class="attachment-spinner"></span>
+              </span>
+              <span class="attachment-copy">
+                <span class="attachment-file-line">
+                  <span class="attachment-name" id="attachment-name">bab-hukum-newton.pdf</span>
+                  <span class="attachment-size" id="attachment-size">12,8 MB</span>
+                </span>
+                <span class="attachment-status" id="attachment-status" role="status" aria-live="polite">Membaca PDF...</span>
+              </span>
+              <button class="remove-attachment" id="remove-attachment" type="button" aria-label="Hapus lampiran">×</button>
+            </div>
+            <p class="attachment-note" id="attachment-note" hidden>Materi panjang akan dipotong otomatis sebelum diproses AI.</p>
+          </div>
+
+          <form class="composer-form" id="composer-form">
+            <button class="composer-icon-button" id="upload-trigger" type="button" aria-label="Unggah materi PDF">
+              <svg class="icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M12 5v14M5 12h14" stroke="currentColor" stroke-linecap="round">
+                </path>
+              </svg>
+            </button>
+            <label class="sr-only" for="composer-input">Pesan atau materi</label>
+            <input class="composer-input" id="composer-input" type="text" placeholder="Kirim atau tempel materi untuk mulai..." autocomplete="off">
+            <button class="send-button" type="submit" aria-label="Kirim pesan">
+              <svg class="icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="m4.5 19.5 15-7.5-15-7.5 2.4 7.5-2.4 7.5Z" stroke="currentColor" stroke-linejoin="round">
+                </path>
+                <path d="M6.9 12h10.7" stroke="currentColor" stroke-linecap="round">
+                </path>
+              </svg>
+            </button>
+          </form>
+          <input class="sr-only" id="pdf-input" type="file" accept=".pdf">
+        </div>
+      </section>
+
+      <details class="prototype-controls" open>
+        <summary>Pratinjau halaman</summary>
+        <div class="control-group">
+          <span class="control-label">Tampilan drawer</span>
+          <div class="control-options" role="group" aria-label="Pilih tampilan drawer">
+            <button class="control-button" type="button" data-layout-state="desktop" aria-pressed="true">Desktop</button>
+            <button class="control-button" type="button" data-layout-state="mobile" aria-pressed="false">Drawer mobile</button>
+          </div>
+        </div>
+        <div class="control-group">
+          <span class="control-label">Keadaan lampiran</span>
+          <div class="control-options" role="group" aria-label="Pilih keadaan lampiran">
+            <button class="control-button" type="button" data-attachment-preview="none" aria-pressed="true">Tidak ada</button>
+            <button class="control-button" type="button" data-attachment-preview="parsing" aria-pressed="false">Membaca</button>
+            <button class="control-button" type="button" data-attachment-preview="success" aria-pressed="false">Berhasil</button>
+            <button class="control-button" type="button" data-attachment-preview="error" aria-pressed="false">Gagal</button>
+          </div>
+        </div>
+      </details>
+    </div>
+
+    <script>
+      (() => {
+        "use strict";
+
+        const body = document.body;
+        const sidebarToggle = document.querySelector("#sidebar-toggle");
+        const drawerBackdrop = document.querySelector("#drawer-backdrop");
+        const layoutButtons = Array.from(document.querySelectorAll("[data-layout-state]"));
+        const attachmentButtons = Array.from(document.querySelectorAll("[data-attachment-preview]"));
+        const sidebarTabs = Array.from(document.querySelectorAll("[data-sidebar-tab]"));
+        const sidebarViews = Array.from(document.querySelectorAll("[data-sidebar-view]"));
+        const topicSearch = document.querySelector("#topic-search");
+        const topicItems = Array.from(document.querySelectorAll(".topic-item"));
+        const searchEmpty = document.querySelector("#search-empty");
+        const quickChips = Array.from(document.querySelectorAll("[data-compose-mode]"));
+        const composerInput = document.querySelector("#composer-input");
+        const composerForm = document.querySelector("#composer-form");
+        const uploadTrigger = document.querySelector("#upload-trigger");
+        const pdfInput = document.querySelector("#pdf-input");
+        const attachmentPreview = document.querySelector("#attachment-preview");
+        const attachmentChip = document.querySelector("#attachment-chip");
+        const attachmentName = document.querySelector("#attachment-name");
+        const attachmentSize = document.querySelector("#attachment-size");
+        const attachmentStatus = document.querySelector("#attachment-status");
+        const attachmentNote = document.querySelector("#attachment-note");
+        const removeAttachment = document.querySelector("#remove-attachment");
+        let selectedFile = null;
+        let parseTimer = null;
+
+        const placeholderCopy = {
+          summary: "Tempel materi yang mau diringkas...",
+          quiz: "Tempel materi untuk dibuatkan kuis...",
+          reverse: "Jelaskan bagian yang ingin kamu ajarkan...",
+          question: "Tulis pertanyaanmu tentang materi..."
+        };
+
+        const sampleAttachment = {
+          name: "bab-hukum-newton.pdf",
+          size: "12,8 MB",
+          large: true
+        };
+
+        function setDrawerState(isOpen) {
+          body.classList.toggle("drawer-open", isOpen);
+          sidebarToggle.setAttribute("aria-expanded", String(isOpen));
+          sidebarToggle.setAttribute("aria-label", isOpen ? "Tutup menu" : "Buka menu");
+        }
+
+        function setLayoutPreview(nextLayout) {
+          const isMobile = nextLayout === "mobile";
+          body.classList.toggle("is-mobile-preview", isMobile);
+          layoutButtons.forEach((button) => {
+            button.setAttribute("aria-pressed", String(button.dataset.layoutState === nextLayout));
+          });
+          setDrawerState(false);
+        }
+
+        function setSidebarTab(nextTab) {
+          sidebarTabs.forEach((tab) => {
+            tab.setAttribute("aria-selected", String(tab.dataset.sidebarTab === nextTab));
+          });
+          sidebarViews.forEach((view) => {
+            view.hidden = view.dataset.sidebarView !== nextTab;
+          });
+        }
+
+        function filterTopics() {
+          const term = topicSearch.value.trim().toLowerCase();
+          let visibleCount = 0;
+
+          topicItems.forEach((item) => {
+            const matches = item.dataset.topicName.toLowerCase().includes(term);
+            item.hidden = !matches;
+            if (matches) visibleCount += 1;
+          });
+
+          searchEmpty.hidden = term.length === 0 || visibleCount > 0;
+        }
+
+        function formatFileSize(bytes) {
+          if (!bytes) return "0 KB";
+          if (bytes < 1024 * 1024) {
+            return `${Math.max(1, Math.round(bytes / 1024))} KB`;
+          }
+          return `${(bytes / (1024 * 1024)).toLocaleString("id-ID", { maximumFractionDigits: 1 })} MB`;
+        }
+
+        function setAttachmentState(nextState, fileData = null) {
+          const data = fileData || sampleAttachment;
+          attachmentChip.dataset.state = nextState;
+          attachmentPreview.hidden = nextState === "none";
+          attachmentName.textContent = data.name;
+          attachmentSize.textContent = data.size;
+          attachmentNote.hidden = nextState !== "success" || !data.large;
+
+          if (nextState === "parsing") {
+            attachmentStatus.textContent = "Membaca PDF...";
+          } else if (nextState === "success") {
+            attachmentStatus.textContent = "PDF siap digunakan";
+          } else if (nextState === "error") {
+            attachmentStatus.textContent = "Gagal membaca PDF — coba tempel teks materinya secara manual di kolom ini.";
+          }
+
+          attachmentButtons.forEach((button) => {
+            button.setAttribute("aria-pressed", String(button.dataset.attachmentPreview === nextState));
+          });
+        }
+
+        function selectFile(file) {
+          selectedFile = file;
+          const fileData = {
+            name: file.name,
+            size: formatFileSize(file.size),
+            large: file.size > 10 * 1024 * 1024
+          };
+
+          window.clearTimeout(parseTimer);
+          setAttachmentState("parsing", fileData);
+
+          // Simulasi ekstraksi PDF untuk prototipe; PDF.js dipasang saat integrasi.
+          parseTimer = window.setTimeout(() => {
+            if (selectedFile === file) setAttachmentState("success", fileData);
+          }, 1100);
+        }
+
+        sidebarToggle.addEventListener("click", () => {
+          setDrawerState(!body.classList.contains("drawer-open"));
+        });
+
+        drawerBackdrop.addEventListener("click", () => setDrawerState(false));
+
+        layoutButtons.forEach((button) => {
+          button.addEventListener("click", () => setLayoutPreview(button.dataset.layoutState));
+        });
+
+        sidebarTabs.forEach((tab) => {
+          tab.addEventListener("click", () => setSidebarTab(tab.dataset.sidebarTab));
+        });
+
+        topicSearch.addEventListener("input", filterTopics);
+
+        quickChips.forEach((chip) => {
+          chip.addEventListener("click", () => {
+            const mode = chip.dataset.composeMode;
+            quickChips.forEach((item) => {
+              item.setAttribute("aria-pressed", String(item === chip));
+            });
+            composerInput.placeholder = placeholderCopy[mode];
+            composerInput.focus();
+          });
+        });
+
+        uploadTrigger.addEventListener("click", () => pdfInput.click());
+
+        pdfInput.addEventListener("change", () => {
+          const file = pdfInput.files && pdfInput.files[0];
+          if (file) selectFile(file);
+        });
+
+        attachmentButtons.forEach((button) => {
+          button.addEventListener("click", () => {
+            selectedFile = null;
+            window.clearTimeout(parseTimer);
+            setAttachmentState(button.dataset.attachmentPreview);
+          });
+        });
+
+        removeAttachment.addEventListener("click", () => {
+          selectedFile = null;
+          pdfInput.value = "";
+          window.clearTimeout(parseTimer);
+          setAttachmentState("none");
+        });
+
+        composerForm.addEventListener("submit", (event) => {
+          event.preventDefault();
+          composerInput.focus();
+        });
+
+        setLayoutPreview("desktop");
+        setSidebarTab("topics");
+        setAttachmentState("none");
+      })();
+    </script>
+  </body>
+</html>

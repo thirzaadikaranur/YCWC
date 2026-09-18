@@ -21,16 +21,6 @@ export interface Topic {
   lastAccessedAt: string;
 }
 
-export interface Session {
-  id: string;
-  topicId: string;
-  userId: string;
-  mode: ChatMode;
-  transcript: TranscriptMessage[];
-  resultSummary: Record<string, unknown> | null;
-  createdAt: string;
-}
-
 export interface UnderstandingMapEntry {
   subTopic: string;
   score: number;
@@ -62,6 +52,12 @@ export interface UserPreferences {
   displayName: string;
   showDiagnosticPrompt: boolean;
   defaultQuizQuestionCount: number;
+}
+
+export interface UserAccount {
+  displayName: string;
+  email: string;
+  joinedAt: string;
 }
 
 export interface TopicListItem {
@@ -108,6 +104,12 @@ export interface ReverseBotData {
 }
 
 export type ChatData = SummaryData | QuizData | ReverseBotData | null;
+
+export interface ConversationEntry extends TranscriptMessage {
+  intent?: ChatMode;
+  data?: ChatData;
+  shouldSuggestDiagnostic?: boolean;
+}
 
 export interface CreateTopicRequest {
   rawMaterial: string;

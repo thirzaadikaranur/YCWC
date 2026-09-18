@@ -1,0 +1,1179 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Profil belajar lintas topik ReverseTutor.">
+    <title>Profil Belajar | ReverseTutor</title>
+    <link rel="stylesheet" href="tokens.css">
+    <style>
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+      }
+
+      :root {
+        --sidebar-width: 286px;
+        --header-height: 68px;
+      }
+
+      html,
+      body {
+        min-width: 320px;
+        min-height: 100%;
+        margin: 0;
+        background: var(--color-bg);
+      }
+
+      body {
+        min-height: 100dvh;
+        overflow: hidden;
+        color: var(--color-surface);
+        font-family: var(--font-body);
+        -webkit-font-smoothing: antialiased;
+        text-rendering: optimizeLegibility;
+      }
+
+      button,
+      input {
+        font: inherit;
+      }
+
+      button,
+      a {
+        -webkit-tap-highlight-color: transparent;
+      }
+
+      button {
+        cursor: pointer;
+      }
+
+      button:disabled {
+        cursor: not-allowed;
+      }
+
+      a {
+        color: inherit;
+      }
+
+      .sr-only {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        white-space: nowrap;
+        border: 0;
+      }
+
+      .icon {
+        display: block;
+        width: 18px;
+        height: 18px;
+        flex: 0 0 auto;
+      }
+
+      .app-shell {
+        min-height: 100dvh;
+      }
+
+      /* Sidebar copied from the previous topic session. */
+      .sidebar {
+        position: fixed;
+        z-index: 40;
+        inset: 0 auto 0 0;
+        display: flex;
+        width: var(--sidebar-width);
+        flex-direction: column;
+        border-right: 1px solid rgba(245, 243, 238, 0.1);
+        background: var(--color-bg);
+        transition: transform 220ms ease;
+      }
+
+      .sidebar-top {
+        padding: 20px 16px 14px;
+      }
+
+      .new-topic-button {
+        display: flex;
+        min-height: 46px;
+        align-items: center;
+        justify-content: center;
+        gap: 9px;
+        width: 100%;
+        padding: 11px 14px;
+        border: 1px solid transparent;
+        border-radius: var(--radius-control);
+        background: var(--color-accent);
+        color: var(--color-on-accent);
+        font-size: 0.82rem;
+        font-weight: 700;
+        transition: background-color 160ms ease, box-shadow 160ms ease, transform 160ms ease;
+      }
+
+      .new-topic-button:hover {
+        background: var(--color-accent-hover);
+        box-shadow: 0 8px 18px rgba(232, 84, 46, 0.2);
+        transform: translateY(-1px);
+      }
+
+      .new-topic-button:active {
+        transform: translateY(0);
+      }
+
+      .new-topic-button .icon {
+        width: 17px;
+        height: 17px;
+        stroke-width: 2.3;
+      }
+
+      .sidebar-scroll {
+        min-height: 0;
+        flex: 1;
+        overflow-y: auto;
+        scrollbar-color: var(--color-border) transparent;
+        scrollbar-width: thin;
+      }
+
+      .sidebar-nav {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 4px;
+        margin: 0 16px 15px;
+        padding: 4px;
+        border: 1px solid rgba(245, 243, 238, 0.1);
+        border-radius: calc(var(--radius-control) + 4px);
+        background: rgba(245, 243, 238, 0.05);
+      }
+
+      .sidebar-tab {
+        min-height: 37px;
+        padding: 8px 7px;
+        border: 1px solid transparent;
+        border-radius: var(--radius-control);
+        background: transparent;
+        color: rgba(245, 243, 238, 0.58);
+        font-size: 0.71rem;
+        font-weight: 600;
+        white-space: nowrap;
+        transition: background-color 160ms ease, color 160ms ease;
+      }
+
+      .sidebar-tab:hover {
+        color: var(--color-surface);
+      }
+
+      .sidebar-tab[aria-selected="true"] {
+        background: rgba(245, 243, 238, 0.11);
+        color: var(--color-surface);
+      }
+
+      .sidebar-view[hidden],
+      .search-empty[hidden] {
+        display: none;
+      }
+
+      .search-wrap {
+        position: relative;
+        margin: 0 16px 21px;
+      }
+
+      .search-wrap .icon {
+        position: absolute;
+        top: 50%;
+        left: 12px;
+        width: 16px;
+        height: 16px;
+        color: rgba(245, 243, 238, 0.55);
+        pointer-events: none;
+        transform: translateY(-50%);
+      }
+
+      .search-input {
+        width: 100%;
+        min-height: 38px;
+        padding: 9px 12px 9px 36px;
+        border: 1px solid rgba(245, 243, 238, 0.13);
+        border-radius: 999px;
+        outline: none;
+        background: rgba(245, 243, 238, 0.055);
+        color: var(--color-surface);
+        font-size: 0.74rem;
+        transition: border-color 160ms ease, background-color 160ms ease, box-shadow 160ms ease;
+      }
+
+      .search-input::placeholder {
+        color: rgba(245, 243, 238, 0.46);
+      }
+
+      .search-input:hover {
+        border-color: rgba(245, 243, 238, 0.25);
+      }
+
+      .search-input:focus {
+        border-color: var(--color-accent);
+        background: rgba(245, 243, 238, 0.08);
+        box-shadow: 0 0 0 3px rgba(232, 84, 46, 0.15);
+      }
+
+      .topic-section {
+        padding: 0 10px 20px;
+      }
+
+      .section-label {
+        display: block;
+        margin: 0 7px 8px;
+        color: rgba(245, 243, 238, 0.43);
+        font-size: 0.66rem;
+        font-weight: 600;
+        letter-spacing: 0.01em;
+      }
+
+      .topic-list {
+        display: grid;
+        gap: 3px;
+      }
+
+      .topic-item {
+        display: grid;
+        grid-template-columns: 8px minmax(0, 1fr);
+        gap: 10px;
+        width: 100%;
+        padding: 10px;
+        border: 1px solid transparent;
+        border-radius: 13px;
+        background: transparent;
+        color: var(--color-surface);
+        text-align: left;
+        transition: background-color 160ms ease, border-color 160ms ease;
+      }
+
+      .topic-item:hover {
+        border-color: rgba(245, 243, 238, 0.08);
+        background: rgba(245, 243, 238, 0.07);
+      }
+
+      .topic-indicator {
+        width: 7px;
+        height: 7px;
+        margin-top: 5px;
+        border-radius: 50%;
+        background: rgba(245, 243, 238, 0.3);
+        box-shadow: 0 0 0 3px rgba(245, 243, 238, 0.035);
+      }
+
+      .topic-indicator.is-success {
+        background: var(--color-success);
+        box-shadow: 0 0 0 3px rgba(124, 152, 133, 0.13);
+      }
+
+      .topic-indicator.is-warning {
+        background: var(--color-warning);
+        box-shadow: 0 0 0 3px rgba(201, 169, 89, 0.13);
+      }
+
+      .topic-info {
+        display: grid;
+        min-width: 0;
+        gap: 5px;
+      }
+
+      .topic-title {
+        overflow: hidden;
+        font-size: 0.76rem;
+        font-weight: 600;
+        line-height: 1.35;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      .topic-meta {
+        display: flex;
+        align-items: center;
+        gap: 7px;
+        color: rgba(245, 243, 238, 0.45);
+        font-size: 0.64rem;
+        line-height: 1;
+      }
+
+      .session-badge {
+        padding: 4px 6px;
+        border: 1px solid rgba(245, 243, 238, 0.1);
+        border-radius: 5px;
+        background: rgba(245, 243, 238, 0.055);
+        color: rgba(245, 243, 238, 0.66);
+        font-size: 0.6rem;
+        font-weight: 600;
+      }
+
+      .search-empty {
+        margin: 0 7px;
+        color: rgba(245, 243, 238, 0.52);
+        font-size: 0.7rem;
+        line-height: 1.5;
+      }
+
+      .profile-preview {
+        margin: 0 16px;
+        padding: 14px;
+        border: 1px solid rgba(245, 243, 238, 0.1);
+        border-radius: var(--radius-control);
+        background: rgba(245, 243, 238, 0.055);
+      }
+
+      .profile-preview h2 {
+        margin: 0 0 8px;
+        color: var(--color-surface);
+        font-family: var(--font-display);
+        font-size: 1.05rem;
+        font-weight: 600;
+        letter-spacing: -0.02em;
+      }
+
+      .profile-preview p {
+        margin: 0;
+        color: rgba(245, 243, 238, 0.56);
+        font-size: 0.7rem;
+        line-height: 1.55;
+      }
+
+      .sidebar-footer {
+        flex: 0 0 auto;
+        padding: 13px 14px 16px;
+        border-top: 1px solid rgba(245, 243, 238, 0.12);
+      }
+
+      .user-settings-link {
+        display: grid;
+        grid-template-columns: 32px minmax(0, 1fr) 20px;
+        gap: 10px;
+        align-items: center;
+        width: 100%;
+        padding: 9px 8px;
+        border: 1px solid transparent;
+        border-radius: 13px;
+        text-decoration: none;
+        transition: background-color 160ms ease, border-color 160ms ease;
+      }
+
+      .user-settings-link:hover {
+        border-color: rgba(245, 243, 238, 0.08);
+        background: rgba(245, 243, 238, 0.07);
+      }
+
+      .user-avatar {
+        display: grid;
+        width: 32px;
+        height: 32px;
+        place-items: center;
+        border-radius: 50%;
+        background: var(--color-accent);
+        color: var(--color-on-accent);
+        font-size: 0.64rem;
+        font-weight: 800;
+        letter-spacing: 0.02em;
+      }
+
+      .user-copy {
+        display: grid;
+        min-width: 0;
+        gap: 3px;
+      }
+
+      .user-name,
+      .user-role {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      .user-name {
+        color: var(--color-surface);
+        font-size: 0.72rem;
+        font-weight: 700;
+        line-height: 1.25;
+      }
+
+      .user-role {
+        color: rgba(245, 243, 238, 0.48);
+        font-size: 0.63rem;
+        line-height: 1.25;
+      }
+
+      .settings-icon {
+        width: 17px;
+        height: 17px;
+        color: rgba(245, 243, 238, 0.57);
+      }
+
+      .drawer-backdrop {
+        position: fixed;
+        z-index: 35;
+        inset: 0;
+        display: none;
+        border: 0;
+        background: rgba(8, 10, 28, 0.58);
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 220ms ease;
+      }
+
+      .workspace {
+        display: flex;
+        min-height: 100dvh;
+        margin-left: var(--sidebar-width);
+        flex-direction: column;
+        overflow: hidden;
+      }
+
+      .app-header {
+        display: flex;
+        height: var(--header-height);
+        flex: 0 0 var(--header-height);
+        align-items: center;
+        padding: 0 26px;
+        border-bottom: 1px solid rgba(245, 243, 238, 0.09);
+      }
+
+      .header-brand {
+        display: inline-flex;
+        min-width: 0;
+        align-items: center;
+        gap: 9px;
+      }
+
+      .hamburger-button {
+        display: grid;
+        width: 34px;
+        height: 34px;
+        margin-right: 5px;
+        place-items: center;
+        border: 1px solid transparent;
+        border-radius: 9px;
+        background: transparent;
+        color: rgba(245, 243, 238, 0.8);
+        transition: background-color 160ms ease, color 160ms ease;
+      }
+
+      .hamburger-button:hover {
+        background: rgba(245, 243, 238, 0.08);
+        color: var(--color-surface);
+      }
+
+      .hamburger-button .icon {
+        width: 19px;
+        height: 19px;
+      }
+
+      .header-logo {
+        display: block;
+        width: 27px;
+        height: 27px;
+        border: 1px solid rgba(245, 243, 238, 0.12);
+        border-radius: 8px;
+        object-fit: cover;
+      }
+
+      .wordmark {
+        overflow: hidden;
+        color: rgba(245, 243, 238, 0.9);
+        font-family: var(--font-display);
+        font-size: 1.02rem;
+        font-weight: 600;
+        letter-spacing: -0.02em;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      .profile-main {
+        min-height: 0;
+        flex: 1;
+        overflow-y: auto;
+        padding: clamp(30px, 6vw, 68px) clamp(18px, 6vw, 80px) 72px;
+        scrollbar-color: var(--color-border) transparent;
+        scrollbar-width: thin;
+      }
+
+      .profile-inner {
+        width: min(100%, 980px);
+        margin: 0 auto;
+      }
+
+      .profile-heading {
+        display: flex;
+        align-items: flex-end;
+        justify-content: space-between;
+        gap: 28px;
+        margin-bottom: 26px;
+      }
+
+      .profile-heading-copy h1 {
+        max-width: 12ch;
+        margin: 0 0 11px;
+        color: var(--color-surface);
+        font-family: var(--font-display);
+        font-size: clamp(2.45rem, 6vw, 4.25rem);
+        font-weight: 600;
+        letter-spacing: -0.065em;
+        line-height: 0.98;
+      }
+
+      .updated-at {
+        margin: 0;
+        color: rgba(245, 243, 238, 0.55);
+        font-size: 0.74rem;
+        line-height: 1.5;
+      }
+
+      .analysis-button {
+        display: inline-flex;
+        min-height: 46px;
+        flex: 0 0 auto;
+        align-items: center;
+        justify-content: center;
+        gap: 9px;
+        padding: 11px 16px;
+        border: 1px solid transparent;
+        border-radius: var(--radius-control);
+        background: var(--color-accent);
+        color: var(--color-on-accent);
+        font-size: 0.75rem;
+        font-weight: 700;
+        transition: background-color 160ms ease, box-shadow 160ms ease, opacity 160ms ease;
+      }
+
+      .analysis-button:hover:not(:disabled) {
+        background: var(--color-accent-hover);
+        box-shadow: 0 8px 18px rgba(232, 84, 46, 0.2);
+      }
+
+      .analysis-button:disabled {
+        opacity: 0.52;
+      }
+
+      .analysis-button .button-loading[hidden],
+      .analysis-button .button-label[hidden] {
+        display: none;
+      }
+
+      .button-loading {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .button-spinner {
+        width: 14px;
+        height: 14px;
+        border: 2px solid rgba(27, 31, 59, 0.28);
+        border-top-color: var(--color-on-accent);
+        border-radius: 50%;
+        animation: spin 700ms linear infinite;
+      }
+
+      .preview-toolbar {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 10px 16px;
+        margin-bottom: 25px;
+        padding: 10px 12px;
+        border: 1px solid rgba(245, 243, 238, 0.1);
+        border-radius: 12px;
+        background: rgba(245, 243, 238, 0.045);
+      }
+
+      .preview-title {
+        color: rgba(245, 243, 238, 0.43);
+        font-size: 0.61rem;
+        font-weight: 700;
+      }
+
+      .preview-group {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+      }
+
+      .preview-group-label {
+        color: rgba(245, 243, 238, 0.44);
+        font-size: 0.6rem;
+      }
+
+      .preview-button {
+        min-height: 27px;
+        padding: 5px 8px;
+        border: 1px solid rgba(245, 243, 238, 0.15);
+        border-radius: 7px;
+        background: transparent;
+        color: rgba(245, 243, 238, 0.65);
+        font-size: 0.59rem;
+        font-weight: 700;
+        transition: border-color 160ms ease, background-color 160ms ease, color 160ms ease;
+      }
+
+      .preview-button:hover,
+      .preview-button[aria-pressed="true"] {
+        border-color: rgba(232, 84, 46, 0.62);
+        background: rgba(232, 84, 46, 0.12);
+        color: var(--color-surface);
+      }
+
+      .insight-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 14px;
+      }
+
+      .insight-grid[hidden],
+      .profile-empty[hidden] {
+        display: none;
+      }
+
+      .insight-card {
+        min-height: 205px;
+        padding: 23px 23px 21px;
+        border: 1px solid rgba(245, 243, 238, 0.14);
+        border-top-width: 4px;
+        border-radius: 16px;
+        background: var(--color-surface);
+        color: var(--color-ink);
+        box-shadow: 0 16px 38px rgba(8, 10, 28, 0.16);
+      }
+
+      .insight-card.is-strength {
+        border-color: var(--color-success);
+      }
+
+      .insight-card.is-warning {
+        border-color: var(--color-warning);
+      }
+
+      .insight-card.is-weakness {
+        border-color: var(--color-danger);
+      }
+
+      .insight-type {
+        display: inline-flex;
+        min-height: 24px;
+        align-items: center;
+        padding: 5px 8px;
+        border-radius: 6px;
+        background: rgba(124, 152, 133, 0.15);
+        color: #557961;
+        font-size: 0.59rem;
+        font-weight: 800;
+      }
+
+      .insight-card.is-warning .insight-type {
+        background: rgba(201, 169, 89, 0.16);
+        color: #826A2B;
+      }
+
+      .insight-card.is-weakness .insight-type {
+        background: rgba(193, 68, 60, 0.12);
+        color: #963E38;
+      }
+
+      .insight-card h2 {
+        max-width: 20ch;
+        margin: 20px 0 9px;
+        font-family: var(--font-display);
+        font-size: 1.38rem;
+        font-weight: 600;
+        letter-spacing: -0.035em;
+        line-height: 1.08;
+      }
+
+      .insight-card p {
+        max-width: 47ch;
+        margin: 0;
+        color: var(--color-ink-muted);
+        font-size: 0.76rem;
+        line-height: 1.6;
+      }
+
+      .insight-source {
+        display: block;
+        margin-top: 20px;
+        color: rgba(32, 36, 62, 0.48);
+        font-size: 0.61rem;
+        font-weight: 600;
+      }
+
+      .profile-empty {
+        display: grid;
+        min-height: 390px;
+        place-items: center;
+        padding: 42px 28px;
+        border: 1px solid rgba(245, 243, 238, 0.12);
+        border-radius: 18px;
+        background: rgba(245, 243, 238, 0.055);
+        text-align: center;
+      }
+
+      .empty-content {
+        display: flex;
+        max-width: 43ch;
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .empty-symbol {
+        width: 34px;
+        height: 34px;
+        margin-bottom: 19px;
+        color: var(--color-accent);
+      }
+
+      .empty-content h2 {
+        max-width: 17ch;
+        margin: 0 0 12px;
+        color: var(--color-surface);
+        font-family: var(--font-display);
+        font-size: clamp(1.65rem, 4vw, 2.25rem);
+        font-weight: 600;
+        letter-spacing: -0.045em;
+        line-height: 1.06;
+      }
+
+      .empty-content p {
+        margin: 0;
+        color: rgba(245, 243, 238, 0.58);
+        font-size: 0.77rem;
+        line-height: 1.65;
+      }
+
+      .empty-analysis-button {
+        min-height: 43px;
+        margin-top: 22px;
+        padding: 10px 15px;
+        border: 1px solid rgba(245, 243, 238, 0.14);
+        border-radius: var(--radius-control);
+        background: rgba(245, 243, 238, 0.08);
+        color: rgba(245, 243, 238, 0.43);
+        font-size: 0.72rem;
+        font-weight: 700;
+      }
+
+      :focus-visible {
+        outline: 3px solid rgba(232, 84, 46, 0.72);
+        outline-offset: 3px;
+      }
+
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+
+      @media (max-width: 1040px) and (min-width: 768px) {
+        :root {
+          --sidebar-width: 246px;
+        }
+
+        .profile-main {
+          padding-right: 34px;
+          padding-left: 34px;
+        }
+      }
+
+      @media (max-width: 767px) {
+        body {
+          overflow: hidden;
+        }
+
+        .sidebar {
+          width: min(86vw, 320px);
+          transform: translateX(-102%);
+          box-shadow: 18px 0 42px rgba(8, 10, 28, 0.28);
+        }
+
+        body.drawer-open .sidebar {
+          transform: translateX(0);
+        }
+
+        .drawer-backdrop {
+          display: block;
+        }
+
+        body.drawer-open .drawer-backdrop {
+          opacity: 1;
+          pointer-events: auto;
+        }
+
+        .workspace {
+          margin-left: 0;
+        }
+
+        .app-header {
+          height: 62px;
+          flex-basis: 62px;
+          padding: 0 15px;
+        }
+
+        .profile-main {
+          padding: 30px 16px 50px;
+        }
+
+        .profile-heading {
+          display: block;
+          margin-bottom: 22px;
+        }
+
+        .profile-heading-copy h1 {
+          font-size: 3rem;
+        }
+
+        .analysis-button {
+          width: 100%;
+          margin-top: 20px;
+        }
+
+        .preview-toolbar {
+          align-items: flex-start;
+          flex-direction: column;
+          gap: 8px;
+        }
+
+        .insight-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .insight-card {
+          min-height: auto;
+        }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        *,
+        *::before,
+        *::after {
+          scroll-behavior: auto !important;
+          transition-duration: 0.01ms !important;
+          animation-duration: 0.01ms !important;
+          animation-iteration-count: 1 !important;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="sidebar" id="sidebar" aria-label="Navigasi ReverseTutor">
+        <div class="sidebar-top">
+          <button class="new-topic-button" id="new-topic-button" type="button">
+            <svg class="icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M12 5v14M5 12h14" stroke="currentColor" stroke-linecap="round">
+              </path>
+            </svg>
+            <span>Topik Baru</span>
+          </button>
+        </div>
+
+        <div class="sidebar-scroll">
+          <nav class="sidebar-nav" role="tablist" aria-label="Navigasi belajar">
+            <button class="sidebar-tab" id="topics-tab" type="button" role="tab" aria-selected="false" aria-controls="topics-view" data-sidebar-tab="topics">Topik</button>
+            <button class="sidebar-tab" id="profile-tab" type="button" role="tab" aria-selected="true" aria-controls="profile-view" data-sidebar-tab="profile">Profil Belajar</button>
+          </nav>
+
+          <div class="sidebar-view" id="topics-view" role="tabpanel" aria-labelledby="topics-tab" data-sidebar-view="topics" hidden>
+            <div class="search-wrap">
+              <svg class="icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <circle cx="10.8" cy="10.8" r="6.3" stroke="currentColor" stroke-width="1.8">
+                </circle>
+                <path d="m16 16 4.4 4.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+                </path>
+              </svg>
+              <label class="sr-only" for="topic-search">Cari topik</label>
+              <input class="search-input" id="topic-search" type="search" placeholder="Cari topik" autocomplete="off">
+            </div>
+
+            <section class="topic-section" aria-labelledby="recent-topics-label">
+              <span class="section-label" id="recent-topics-label">Terbaru</span>
+              <div class="topic-list" id="topic-list">
+                <button class="topic-item" type="button" data-topic-name="Hukum Newton dan Gaya">
+                  <span class="topic-indicator is-success" aria-label="Pemahaman kuat"></span>
+                  <span class="topic-info">
+                    <span class="topic-title">Hukum Newton dan Gaya</span>
+                    <span class="topic-meta"><span class="session-badge">4 sesi</span><span>2 jam lalu</span></span>
+                  </span>
+                </button>
+
+                <button class="topic-item" type="button" data-topic-name="Pergerakan Nasional Indonesia">
+                  <span class="topic-indicator is-warning" aria-label="Perlu diulang"></span>
+                  <span class="topic-info">
+                    <span class="topic-title">Pergerakan Nasional Indonesia</span>
+                    <span class="topic-meta"><span class="session-badge">2 sesi</span><span>kemarin</span></span>
+                  </span>
+                </button>
+
+                <button class="topic-item" type="button" data-topic-name="Sistem Pernapasan Manusia">
+                  <span class="topic-indicator" aria-label="Belum ada data pemahaman"></span>
+                  <span class="topic-info">
+                    <span class="topic-title">Sistem Pernapasan Manusia</span>
+                    <span class="topic-meta"><span class="session-badge">3 sesi</span><span>baru saja</span></span>
+                  </span>
+                </button>
+
+                <button class="topic-item" type="button" data-topic-name="Turunan Fungsi Aljabar">
+                  <span class="topic-indicator is-success" aria-label="Pemahaman kuat"></span>
+                  <span class="topic-info">
+                    <span class="topic-title">Turunan Fungsi Aljabar</span>
+                    <span class="topic-meta"><span class="session-badge">6 sesi</span><span>5 hari lalu</span></span>
+                  </span>
+                </button>
+              </div>
+              <p class="search-empty" id="search-empty" hidden>Nggak ketemu. Coba kata kunci lain, atau mulai topik baru.</p>
+            </section>
+          </div>
+
+          <div class="sidebar-view" id="profile-view" role="tabpanel" aria-labelledby="profile-tab" data-sidebar-view="profile">
+            <div class="profile-preview">
+              <h2>Profil Belajar</h2>
+              <p>Temuan lintas topik dirangkum di halaman ini supaya kamu bisa melihat pola belajarmu.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="sidebar-footer">
+          <a class="user-settings-link" href="#settings" aria-label="Buka pengaturan">
+            <span class="user-avatar" aria-hidden="true">AR</span>
+            <span class="user-copy">
+              <span class="user-name">Aditya Rahman</span>
+              <span class="user-role">Pelajar · SMA Kelas XI</span>
+            </span>
+            <svg class="settings-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.38a2 2 0 0 0-.73-2.73l-.15-.09a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              </path>
+              <circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.5">
+              </circle>
+            </svg>
+          </a>
+        </div>
+      </aside>
+
+      <button class="drawer-backdrop" id="drawer-backdrop" type="button" aria-label="Tutup menu"></button>
+
+      <main class="workspace">
+        <header class="app-header">
+          <div class="header-brand">
+            <button class="hamburger-button" id="sidebar-toggle" type="button" aria-label="Buka menu" aria-controls="sidebar" aria-expanded="false">
+              <svg class="icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+                </path>
+              </svg>
+            </button>
+            <img class="header-logo" src="Logo.png" alt="" width="27" height="27">
+            <span class="wordmark">ReverseTutor</span>
+          </div>
+        </header>
+
+        <section class="profile-main" aria-labelledby="profile-title">
+          <div class="profile-inner">
+            <header class="profile-heading">
+              <div class="profile-heading-copy">
+                <h1 id="profile-title">Profil Belajar</h1>
+                <p class="updated-at" id="updated-at">Terakhir diperbarui: 2 jam lalu</p>
+              </div>
+              <button class="analysis-button" id="analysis-button" type="button" aria-busy="false">
+                <span class="button-label">Perbarui Analisis</span>
+                <span class="button-loading" hidden>
+                  <span class="button-spinner" aria-hidden="true"></span>
+                  <span>Menganalisis...</span>
+                </span>
+              </button>
+            </header>
+
+            <div class="preview-toolbar" aria-label="Kontrol pratinjau state profil">
+              <span class="preview-title">Pratinjau state</span>
+              <div class="preview-group" role="group" aria-label="Pilih state data profil">
+                <span class="preview-group-label">Data</span>
+                <button class="preview-button" type="button" data-profile-state="filled" aria-pressed="true">Berisi</button>
+                <button class="preview-button" type="button" data-profile-state="empty" aria-pressed="false">Kosong</button>
+              </div>
+              <div class="preview-group" role="group" aria-label="Pilih state tombol analisis">
+                <span class="preview-group-label">Tombol</span>
+                <button class="preview-button" type="button" data-analysis-preview="ready" aria-pressed="true">Siap</button>
+                <button class="preview-button" type="button" data-analysis-preview="loading" aria-pressed="false">Memuat</button>
+              </div>
+            </div>
+
+            <div class="insight-grid" id="insight-grid">
+              <article class="insight-card is-strength">
+                <span class="insight-type">Kekuatan</span>
+                <h2>Kamu kuat mengingat definisi</h2>
+                <p>Di beberapa topik, kamu bisa menyebutkan konsep inti dengan tepat sebelum masuk ke penjelasan yang lebih panjang.</p>
+                <span class="insight-source">Terlihat di 3 topik</span>
+              </article>
+
+              <article class="insight-card is-warning">
+                <span class="insight-type">Perlu dilatih</span>
+                <h2>Contoh konkret masih sering tertinggal</h2>
+                <p>Penjelasanmu sudah punya arah, tetapi biasanya berhenti sebelum menghubungkan konsep dengan situasi sehari-hari.</p>
+                <span class="insight-source">Muncul di 4 sesi</span>
+              </article>
+
+              <article class="insight-card is-strength">
+                <span class="insight-type">Kekuatan</span>
+                <h2>Hubungan sebab-akibat mulai konsisten</h2>
+                <p>Kamu semakin sering menjelaskan bukan hanya apa yang terjadi, tetapi juga kenapa perubahan itu bisa terjadi.</p>
+                <span class="insight-source">Meningkat di 2 topik terakhir</span>
+              </article>
+
+              <article class="insight-card is-weakness">
+                <span class="insight-type">Perlu diperkuat</span>
+                <h2>Istilah teknis kadang belum kamu uraikan</h2>
+                <p>Saat memakai istilah baru, coba tambahkan arti singkat dengan kata-katamu sendiri agar penjelasanmu lebih utuh.</p>
+                <span class="insight-source">Muncul di 3 sesi</span>
+              </article>
+            </div>
+
+            <section class="profile-empty" id="profile-empty" aria-labelledby="empty-title" hidden>
+              <div class="empty-content">
+                <svg class="empty-symbol" viewBox="0 0 40 40" fill="none" aria-hidden="true">
+                  <path d="M20 3.5c1.1 10.7 5.8 15.4 16.5 16.5C25.8 21.1 21.1 25.8 20 36.5 18.9 25.8 14.2 21.1 3.5 20 14.2 18.9 18.9 14.2 20 3.5Z" fill="currentColor">
+                  </path>
+                  <circle cx="32.5" cy="7.5" r="2" fill="currentColor">
+                  </circle>
+                </svg>
+                <h2 id="empty-title">Belum ada cukup data untuk profil belajar.</h2>
+                <p>Selesaikan beberapa sesi "Jelaskan ke Saya" di topik yang berbeda-beda dulu. Setelah itu, aku bisa menemukan pola belajar yang berulang.</p>
+                <button class="empty-analysis-button" id="empty-analysis-button" type="button" disabled>Perbarui Analisis</button>
+              </div>
+            </section>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <script>
+      (() => {
+        "use strict";
+
+        const body = document.body;
+        const sidebarToggle = document.querySelector("#sidebar-toggle");
+        const drawerBackdrop = document.querySelector("#drawer-backdrop");
+        const sidebarTabs = Array.from(document.querySelectorAll("[data-sidebar-tab]"));
+        const sidebarViews = Array.from(document.querySelectorAll("[data-sidebar-view]"));
+        const topicSearch = document.querySelector("#topic-search");
+        const topicItems = Array.from(document.querySelectorAll(".topic-item"));
+        const searchEmpty = document.querySelector("#search-empty");
+        const profileStateButtons = Array.from(document.querySelectorAll("[data-profile-state]"));
+        const analysisPreviewButtons = Array.from(document.querySelectorAll("[data-analysis-preview]"));
+        const insightGrid = document.querySelector("#insight-grid");
+        const profileEmpty = document.querySelector("#profile-empty");
+        const analysisButton = document.querySelector("#analysis-button");
+        const emptyAnalysisButton = document.querySelector("#empty-analysis-button");
+        const updatedAt = document.querySelector("#updated-at");
+        const analysisLabel = analysisButton.querySelector(".button-label");
+        const analysisLoading = analysisButton.querySelector(".button-loading");
+        let profileState = "filled";
+        let isAnalysisLoading = false;
+        let analysisTimer = null;
+
+        function setDrawerState(isOpen) {
+          body.classList.toggle("drawer-open", isOpen);
+          sidebarToggle.setAttribute("aria-expanded", String(isOpen));
+          sidebarToggle.setAttribute("aria-label", isOpen ? "Tutup menu" : "Buka menu");
+        }
+
+        function setSidebarTab(nextTab) {
+          sidebarTabs.forEach((tab) => {
+            tab.setAttribute("aria-selected", String(tab.dataset.sidebarTab === nextTab));
+          });
+          sidebarViews.forEach((view) => {
+            view.hidden = view.dataset.sidebarView !== nextTab;
+          });
+        }
+
+        function filterTopics() {
+          const term = topicSearch.value.trim().toLowerCase();
+          let visibleCount = 0;
+
+          topicItems.forEach((item) => {
+            const matches = item.dataset.topicName.toLowerCase().includes(term);
+            item.hidden = !matches;
+            if (matches) visibleCount += 1;
+          });
+
+          searchEmpty.hidden = term.length === 0 || visibleCount > 0;
+        }
+
+        function setAnalysisLoading(nextState) {
+          isAnalysisLoading = nextState;
+          const isEmpty = profileState === "empty";
+          analysisButton.disabled = isAnalysisLoading || isEmpty;
+          analysisButton.setAttribute("aria-busy", String(isAnalysisLoading));
+          analysisLabel.hidden = isAnalysisLoading;
+          analysisLoading.hidden = !isAnalysisLoading;
+
+          analysisPreviewButtons.forEach((button) => {
+            button.setAttribute("aria-pressed", String((button.dataset.analysisPreview === "loading") === isAnalysisLoading));
+          });
+        }
+
+        function setProfileState(nextState) {
+          profileState = nextState;
+          const isEmpty = nextState === "empty";
+
+          if (isEmpty) {
+            window.clearTimeout(analysisTimer);
+            setAnalysisLoading(false);
+          }
+
+          insightGrid.hidden = isEmpty;
+          profileEmpty.hidden = !isEmpty;
+          updatedAt.textContent = isEmpty ? "Belum pernah diperbarui" : "Terakhir diperbarui: 2 jam lalu";
+          analysisButton.disabled = isEmpty || isAnalysisLoading;
+          emptyAnalysisButton.disabled = !isEmpty;
+
+          profileStateButtons.forEach((button) => {
+            button.setAttribute("aria-pressed", String(button.dataset.profileState === nextState));
+          });
+        }
+
+        function refreshAnalysis() {
+          if (profileState === "empty" || isAnalysisLoading) return;
+          window.clearTimeout(analysisTimer);
+          setAnalysisLoading(true);
+          analysisTimer = window.setTimeout(() => {
+            setAnalysisLoading(false);
+            updatedAt.textContent = "Terakhir diperbarui: baru saja";
+          }, 1400);
+        }
+
+        sidebarToggle.addEventListener("click", () => {
+          setDrawerState(!body.classList.contains("drawer-open"));
+        });
+
+        drawerBackdrop.addEventListener("click", () => setDrawerState(false));
+
+        sidebarTabs.forEach((tab) => {
+          tab.addEventListener("click", () => setSidebarTab(tab.dataset.sidebarTab));
+        });
+
+        topicSearch.addEventListener("input", filterTopics);
+
+        profileStateButtons.forEach((button) => {
+          button.addEventListener("click", () => setProfileState(button.dataset.profileState));
+        });
+
+        analysisPreviewButtons.forEach((button) => {
+          button.addEventListener("click", () => {
+            if (button.dataset.analysisPreview === "loading" && profileState === "empty") return;
+            setAnalysisLoading(button.dataset.analysisPreview === "loading");
+          });
+        });
+
+        analysisButton.addEventListener("click", refreshAnalysis);
+
+        setSidebarTab("profile");
+        setProfileState("filled");
+        setAnalysisLoading(false);
+      })();
+    </script>
+  </body>
+</html>

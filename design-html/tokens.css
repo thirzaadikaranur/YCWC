@@ -1,0 +1,25 @@
+@import url("https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap");
+
+:root {
+  --color-bg: #1B1F3B;
+  --color-surface: #F5F3EE;
+  --color-accent: #E8542E;
+  --color-success: #7C9885;
+  --color-warning: #C9A959;
+  --color-danger: #C1443C;
+  --color-border: #2E3358;
+  --color-accent-hover: #F0643E;
+
+  --color-ink: #20243E;
+  --color-ink-muted: #676A7D;
+  --color-surface-muted: #EBE9E2;
+  --color-surface-bright: #FFFDF8;
+  --color-on-accent: #1B1F3B;
+
+  --font-display: "Fraunces", Georgia, serif;
+  --font-body: "Inter", Arial, sans-serif;
+
+  --radius-card: 24px;
+  --radius-control: 12px;
+  --shadow-card: 0 24px 70px rgba(8, 10, 28, 0.28);
+}
