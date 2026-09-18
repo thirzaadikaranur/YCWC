@@ -259,14 +259,20 @@ Claude) — sengaja dibuat SEDERHANA dan familiar dulu, sebelum keunikan
 ReverseTutor muncul lewat pemakaian sebenarnya.
 
 **Struktur:**
-- Header minimal: ikon hamburger (buka sidebar) di kiri, TANPA judul topik
-  (karena belum ada topik aktif). Tidak perlu banner promosi apa pun (beda
-  dari referensi Claude yang punya banner upgrade — tidak relevan untuk MVP
-  lomba).
+- **Header — persisten di semua halaman aplikasi (kecuali Login):** ikon
+  hamburger (buka sidebar) di kiri, diikuti **teks wordmark "ReverseTutor"**
+  (font Fraunces, ukuran kecil, warna netral/off-white — bukan tombol,
+  murni label identitas). TIDAK ADA tagline/subtitle apa pun di sebelahnya
+  (misal "Ruang belajar adaptif" — JANGAN ditulis di mana pun di header,
+  ini sudah diputuskan dihapus permanen), TIDAK ADA banner promosi. Kalau
+  belum ada topik aktif (Layar Awal), sisi kanan header kosong. Kalau
+  topik aktif, sisi kanan header menampilkan judul topik + ikon toggle
+  panel kanan (lihat 7.2).
 - **Tengah layar (vertically centered):**
-  - Ikon/logo ReverseTutor berwarna aksen (`--color-accent`, burnt-orange),
-    bentuk sederhana (misal bintang/asterisk atau ikon custom, BUKAN emoji
-    generik)
+  - Ikon aksen kecil (`--color-accent`, burnt-orange) berbentuk simbol
+    sederhana (bintang/asterisk/sparkle — BUKAN logo bertuliskan nama
+    aplikasi, BUKAN emoji generik). Ini elemen branding TAMBAHAN di tengah
+    layar, terpisah dari wordmark "ReverseTutor" di header.
   - Teks sapaan singkat dengan font Fraunces, contoh: **"Ada yang mau kamu
     pelajari hari ini?"**
 - **Chip quick-start** di bawah teks sapaan — 4 pilihan mewakili tiap mode,
@@ -282,14 +288,43 @@ ReverseTutor muncul lewat pemakaian sebenarnya.
   yang menyesuaikan mode terpilih.
 - **Input bar fixed di bawah layar** (mengikuti pola Claude): bentuk pill
   besar, placeholder "Kirim atau tempel materi untuk mulai...", ikon "+" di
-  kiri untuk upload PDF/paste teks lebih terstruktur, tombol kirim di kanan.
+  kiri untuk upload PDF, tombol kirim di kanan. Detail interaksi upload PDF
+  lihat 7.0.1 di bawah.
+
+#### 7.0.1 Upload Materi PDF (klik ikon "+")
+
+Belum ada spesifikasi detail untuk ini sebelumnya — ditambahkan sekarang.
+
+- Klik ikon "+" **langsung membuka file picker native** (`accept=".pdf"`),
+  TIDAK perlu menu/dropdown tambahan (paste teks langsung sudah bisa lewat
+  mengetik/menempel ke input bar itu sendiri, jadi "+" cukup untuk satu
+  aksi: pilih file PDF).
+- Setelah file dipilih, tampilkan **chip lampiran** di atas input bar
+  (bukan di dalamnya), berisi: ikon dokumen kecil, nama file (dipotong
+  dengan ellipsis kalau panjang), ukuran file, dan tombol "×" untuk
+  menghapus lampiran.
+- **State parsing:** PDF diekstrak jadi teks LANGSUNG DI BROWSER (client-side,
+  library PDF.js — lihat `PLAN.md` sesi Integrasi), backend tidak pernah
+  menerima file biner. Selama proses ekstraksi, chip menampilkan spinner
+  kecil + teks "Membaca PDF...".
+- **State berhasil:** chip berubah ke tampilan normal (ikon dokumen +
+  centang kecil), input bar siap dikirim (isi `rawMaterial` sudah terisi
+  teks hasil ekstraksi di belakang layar, user boleh tetap mengetik pesan
+  tambahan atau langsung klik kirim).
+- **State gagal (WAJIB ada, jangan silent fail):** chip berubah warna
+  danger + teks "Gagal membaca PDF — coba tempel teks materinya secara
+  manual di kolom ini.", tombol "×" untuk menghapus dan mencoba lagi.
+- **Batas wajar:** beri catatan kecil di bawah chip kalau file besar (misal
+  >15 halaman/>10MB): "Materi panjang akan dipotong otomatis sebelum
+  diproses AI" (konsisten dengan catatan pemangkasan `raw_material` di
+  `PROMPTS.md`).
 
 **Transisi ke chat normal:** begitu user mengirim pesan pertama (lewat chip
-ATAU ngetik bebas + materi), sistem otomatis membuat topic baru (judul
-di-generate AI dari materi), lalu tampilan bertransisi ke chat normal
-dengan sidebar + panel kanan aktif seperti dijelaskan di 7.1-7.3. Layar
-awal ini TIDAK pernah punya sidebar/panel kanan terbuka bersamaan — itu
-baru muncul setelah topik pertama terbentuk.
+ATAU ngetik bebas + materi, ATAU upload PDF di atas), sistem otomatis
+membuat topic baru (judul di-generate AI dari materi), lalu tampilan
+bertransisi ke chat normal dengan sidebar + panel kanan aktif seperti
+dijelaskan di 7.1-7.3. Layar awal ini TIDAK pernah punya sidebar/panel
+kanan terbuka bersamaan — itu baru muncul setelah topik pertama terbentuk.
 
 ### 7.1 Sidebar Kiri — Daftar Topik
 
@@ -318,12 +353,21 @@ pola baru:
 - **Item topik aktif/terpilih:** mendapat highlight pill berbentuk rounded
   penuh (bukan cuma garis/border kiri), mengikuti pola item terpilih di
   Claude
-- **Footer sidebar (fixed di bawah, selalu terlihat meski daftar discroll):**
-  avatar/inisial user + nama + ikon gear/settings — mengikuti pola akun
-  user di bagian bawah sidebar Claude. Klik ikon gear membuka **halaman
-  Settings penuh** (BUKAN dropdown kecil — lihat `SETTINGS.md` untuk detail
-  lengkap 3 kategori: Umum, Belajar, Akun; termasuk ganti password, toggle
-  preferensi belajar, dan logout).
+- **Footer sidebar (fixed di bawah, selalu terlihat meski daftar discroll),
+  layout PERSIS mengikuti pola ini** (referensi: screenshot hasil sesi
+  sebelumnya, ini bagian yang sudah benar dan wajib direplikasi presisi):
+  - Garis divider tipis memisahkan footer dari daftar topik di atasnya
+  - Baris berisi 3 elemen sejajar horizontal: **avatar inisial** (lingkaran
+    kecil berwarna solid, 2 huruf inisial dari nama tampilan, misal "AR"),
+    **blok teks 2 baris** (baris 1: nama tampilan, bold, misal "Aditya
+    Rahman"; baris 2: teks kecil warna redup, format "Pelajar · {kelas}"
+    — lihat catatan field opsional "Kelas" di `SETTINGS.md` kategori Umum;
+    kalau field kelas kosong, tampilkan "Pelajar" saja tanpa titik), dan
+    **ikon gear** rata kanan
+  - Klik di mana saja pada baris ini (bukan cuma ikon gear) membuka
+    **halaman Settings penuh** (BUKAN dropdown kecil — lihat `SETTINGS.md`
+    untuk detail lengkap 3 kategori: Umum, Belajar, Akun; termasuk ganti
+    password, toggle preferensi belajar, dan logout)
 
 Tiap item topik dalam daftar menampilkan:
 1. Titik indikator warna (rata-rata understanding_map topik itu; abu-abu jika belum ada data)
@@ -335,6 +379,12 @@ Urutan default: terakhir diakses paling atas.
 Empty state search: "Nggak ketemu. Coba kata kunci lain, atau mulai topik baru."
 
 ### 7.2 Area Kerja Tengah
+
+**Header saat topik aktif:** ikon hamburger + wordmark "ReverseTutor" (sama
+seperti Layar Awal, lihat 7.0) di kiri, lalu judul topik (font Fraunces,
+teks biasa bukan tombol) + ikon toggle panel kanan (lihat 7.3) di kanan.
+Tetap TIDAK ADA tagline di header ini.
+
 Satu alur chat berkelanjutan. Isi bubble berubah bentuk sesuai mode:
 
 **Mode qa:** bubble teks biasa, AI kiri, user kanan.
