@@ -1,11 +1,11 @@
 import { NextResponse, type NextRequest } from 'next/server';
-import { withAuth } from '@/lib/api/auth';
+import { withAuth } from '@/lib/server/auth';
 import {
   hasEnoughProfileData,
   toLearningProfile,
   type LearningProfileRow,
-} from '@/lib/api/db';
-import { ApiError } from '@/lib/api/errors';
+} from '@/lib/server/db';
+import { ApiError } from '@/lib/server/errors';
 import type { GetLearningProfileResponse } from '@/types';
 
 export async function GET(request: NextRequest) {

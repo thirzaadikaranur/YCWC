@@ -1,16 +1,16 @@
 import { NextResponse, type NextRequest } from 'next/server';
 import type { SupabaseClient } from '@supabase/supabase-js';
-import { withAuth } from '@/lib/api/auth';
-import { deriveLabel, fetchTopic, touchTopic } from '@/lib/api/db';
-import { ApiError } from '@/lib/api/errors';
-import { extractDiagnosis } from '@/lib/api/normalize';
+import { withAuth } from '@/lib/server/auth';
+import { deriveLabel, fetchTopic, touchTopic } from '@/lib/server/db';
+import { ApiError } from '@/lib/server/errors';
+import { extractDiagnosis } from '@/lib/server/normalize';
 import {
   isChatMode,
   readJsonBody,
   requireNonEmptyString,
   validateResultSummary,
   validateTranscript,
-} from '@/lib/api/validate';
+} from '@/lib/server/validate';
 import type { ReverseBotDiagnosis, SaveSessionResponse } from '@/types';
 
 async function saveDiagnosis(

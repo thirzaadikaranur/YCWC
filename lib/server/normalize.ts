@@ -1,5 +1,5 @@
-import { LlmError } from '@/lib/api/errors';
-import { isChatMode } from '@/lib/api/validate';
+import { LlmError } from '@/lib/server/errors';
+import { isChatMode } from '@/lib/server/validate';
 import type {
   ChatMode,
   LearningProfileInsight,

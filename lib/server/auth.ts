@@ -1,6 +1,6 @@
 import { createClient, type SupabaseClient, type User } from '@supabase/supabase-js';
 import type { NextRequest, NextResponse } from 'next/server';
-import { ApiError, toErrorResponse } from '@/lib/api/errors';
+import { ApiError, toErrorResponse } from '@/lib/server/errors';
 
 export const AUTH_ERROR_MESSAGE =
   'Sesi login tidak valid atau kedaluwarsa. Silakan login ulang.';

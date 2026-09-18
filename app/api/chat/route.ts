@@ -1,14 +1,14 @@
 import { NextResponse, type NextRequest } from 'next/server';
-import { withAuth } from '@/lib/api/auth';
+import { withAuth } from '@/lib/server/auth';
 import {
   fetchTopic,
   fetchUnderstandingMap,
   toTopic,
   touchTopic,
   type UnderstandingMapRow,
-} from '@/lib/api/db';
-import { ApiError } from '@/lib/api/errors';
-import { generateJson } from '@/lib/api/llm';
+} from '@/lib/server/db';
+import { ApiError } from '@/lib/server/errors';
+import { generateJson } from '@/lib/server/llm';
 import {
   normalizeDiagnosis,
   normalizeIntent,
@@ -16,17 +16,20 @@ import {
   normalizeReverseBot,
   normalizeSummary,
   type NormalizedIntent,
-} from '@/lib/api/normalize';
-import { readPreferences } from '@/lib/api/preferences';
+} from '@/lib/server/normalize';
+import { readPreferences } from '@/lib/server/preferences';
 import {
   buildIntentPrompt,
   buildQuizPrompt,
   buildReverseBotAnalysisPrompt,
   buildReverseBotPrompt,
   buildSummaryPrompt,
-} from '@/lib/api/prompts';
-import { readJsonBody, requireNonEmptyString, validateChatHistory } from '@/lib/api/validate';
+} from '@/lib/server/prompts';
+import { readJsonBody, requireNonEmptyString, validateChatHistory, MAX_CHAT_MESSAGE_LENGTH } from '@/lib/server/validate';
 import type { ChatData, ChatMessage, ChatResponse, Topic, UserPreferences } from '@/types';
+
+export const maxDuration = 60;
+
 interface ModeInput {
   topic: Topic;
   history: ChatMessage[];
@@ -109,7 +112,11 @@ export async function POST(request: NextRequest) {
   return withAuth(request, async ({ supabase, user }) => {
     const body = await readJsonBody(request);
     const topicId = requireNonEmptyString(body.topicId, 'Topik tidak valid.');
-    const message = requireNonEmptyString(body.message, 'Pesan tidak boleh kosong.');
+    const message = requireNonEmptyString(
+      body.message,
+      'Pesan tidak boleh kosong.',
+      MAX_CHAT_MESSAGE_LENGTH,
+    );
     const history = removeDuplicateLatest(validateChatHistory(body.history), message);
 
     const topicRow = await fetchTopic(supabase, topicId);

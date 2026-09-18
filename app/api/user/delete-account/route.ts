@@ -1,7 +1,7 @@
 import { NextResponse, type NextRequest } from 'next/server';
 import type { SupabaseClient } from '@supabase/supabase-js';
-import { withAuth } from '@/lib/api/auth';
-import { ApiError } from '@/lib/api/errors';
+import { withAuth } from '@/lib/server/auth';
+import { ApiError } from '@/lib/server/errors';
 import { createAdminClient } from '@/lib/supabase/admin';
 
 async function deleteUserRows(supabase: SupabaseClient, userId: string): Promise<void> {

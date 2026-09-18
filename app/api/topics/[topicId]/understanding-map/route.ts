@@ -1,13 +1,12 @@
 import { NextResponse, type NextRequest } from 'next/server';
-import { withAuth } from '@/lib/api/auth';
+import { withAuth } from '@/lib/server/auth';
 import {
   averageScore,
   fetchTopic,
   fetchUnderstandingMap,
   toUnderstandingMapEntry,
-  touchTopic,
-} from '@/lib/api/db';
-import { ApiError } from '@/lib/api/errors';
+} from '@/lib/server/db';
+import { ApiError } from '@/lib/server/errors';
 import type { GetUnderstandingMapResponse } from '@/types';
 
 export async function GET(
@@ -25,8 +24,6 @@ export async function GET(
     const rows = await fetchUnderstandingMap(supabase, topicId);
     const entries = rows.map(toUnderstandingMapEntry);
     const overallScore = averageScore(entries.map((entry) => entry.score));
-
-    await touchTopic(supabase, topicId);
 
     return NextResponse.json({
       topicTitle: topic.title,

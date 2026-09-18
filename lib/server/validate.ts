@@ -1,7 +1,10 @@
-import { ApiError } from '@/lib/api/errors';
+import { ApiError } from '@/lib/server/errors';
 import type { ChatMessage, ChatMode, TranscriptMessage } from '@/types';
 
 export const CHAT_MODES = ['ringkasan', 'kuis', 'reverse_bot', 'qa'] as const;
+
+export const MAX_RAW_MATERIAL_LENGTH = 30_000;
+export const MAX_CHAT_MESSAGE_LENGTH = 4_000;
 
 const MAX_HISTORY_ITEMS = 40;
 const MAX_TRANSCRIPT_ITEMS = 500;
@@ -10,11 +13,25 @@ export function isChatMode(value: unknown): value is ChatMode {
   return typeof value === 'string' && (CHAT_MODES as readonly string[]).includes(value);
 }
 
-export function requireNonEmptyString(value: unknown, message: string): string {
+export function requireNonEmptyString(
+  value: unknown,
+  message: string,
+  maxLength?: number,
+): string {
   if (typeof value !== 'string' || !value.trim()) {
     throw new ApiError(400, message);
   }
-  return value.trim();
+
+  const trimmed = value.trim();
+
+  if (maxLength !== undefined && trimmed.length > maxLength) {
+    throw new ApiError(
+      400,
+      `Teks terlalu panjang (maksimal ${maxLength.toLocaleString('id-ID')} karakter).`,
+    );
+  }
+
+  return trimmed;
 }
 
 export async function readJsonBody(request: Request): Promise<Record<string, unknown>> {

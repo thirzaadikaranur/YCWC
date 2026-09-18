@@ -1,11 +1,11 @@
 import { NextResponse, type NextRequest } from 'next/server';
-import { withAuth } from '@/lib/api/auth';
+import { withAuth } from '@/lib/server/auth';
 import {
   parsePreferencesPatch,
   readPreferences,
   updateUserPreferences,
-} from '@/lib/api/preferences';
-import { readJsonBody } from '@/lib/api/validate';
+} from '@/lib/server/preferences';
+import { readJsonBody } from '@/lib/server/validate';
 
 export async function GET(request: NextRequest) {
   return withAuth(request, async ({ user }) => {

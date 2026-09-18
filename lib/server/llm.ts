@@ -1,8 +1,8 @@
-import { LlmError } from '@/lib/api/errors';
+import { LlmError } from '@/lib/server/errors';
 
 const GEMINI_DEFAULT_MODEL = 'gemini-3.5-flash';
 const GROQ_DEFAULT_MODEL = 'openai/gpt-oss-120b';
-const REQUEST_TIMEOUT_MS = 45_000;
+const REQUEST_TIMEOUT_MS = 25_000;
 const RETRY_DELAY_MS = 1_500;
 
 interface LlmPrompt {

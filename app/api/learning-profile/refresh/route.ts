@@ -1,11 +1,13 @@
 import { NextResponse, type NextRequest } from 'next/server';
-import { withAuth } from '@/lib/api/auth';
-import { hasEnoughProfileData } from '@/lib/api/db';
-import { ApiError } from '@/lib/api/errors';
-import { generateJson } from '@/lib/api/llm';
-import { normalizeInsights } from '@/lib/api/normalize';
-import { buildLearningProfilePrompt } from '@/lib/api/prompts';
+import { withAuth } from '@/lib/server/auth';
+import { hasEnoughProfileData } from '@/lib/server/db';
+import { ApiError } from '@/lib/server/errors';
+import { generateJson } from '@/lib/server/llm';
+import { normalizeInsights } from '@/lib/server/normalize';
+import { buildLearningProfilePrompt } from '@/lib/server/prompts';
 import type { RefreshLearningProfileResponse } from '@/types';
+
+export const maxDuration = 60;
 
 interface TopicRow {
   id: string;

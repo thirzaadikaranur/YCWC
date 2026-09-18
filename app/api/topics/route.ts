@@ -1,22 +1,24 @@
 import { NextResponse, type NextRequest } from 'next/server';
-import { withAuth } from '@/lib/api/auth';
+import { withAuth } from '@/lib/server/auth';
 import {
   averageScore,
   deriveLabel,
   toTopic,
   type TopicRow,
   type TopicSummaryRow,
-} from '@/lib/api/db';
-import { ApiError } from '@/lib/api/errors';
-import { generateJson } from '@/lib/api/llm';
-import { normalizeTopicTitle } from '@/lib/api/normalize';
-import { buildTopicTitlePrompt } from '@/lib/api/prompts';
-import { readJsonBody, requireNonEmptyString } from '@/lib/api/validate';
+} from '@/lib/server/db';
+import { ApiError } from '@/lib/server/errors';
+import { generateJson } from '@/lib/server/llm';
+import { normalizeTopicTitle } from '@/lib/server/normalize';
+import { buildTopicTitlePrompt } from '@/lib/server/prompts';
+import { readJsonBody, requireNonEmptyString, MAX_RAW_MATERIAL_LENGTH } from '@/lib/server/validate';
 import type {
   CreateTopicResponse,
   GetTopicsResponse,
   TopicListItem,
 } from '@/types';
+
+export const maxDuration = 60;
 
 interface SessionTopicRow {
   topic_id: string;
@@ -85,6 +87,7 @@ export async function POST(request: NextRequest) {
     const rawMaterial = requireNonEmptyString(
       body.rawMaterial,
       'Materi belum diisi. Tempel materi sebelum mulai topik baru.',
+      MAX_RAW_MATERIAL_LENGTH,
     );
 
     const title = await generateTopicTitle(rawMaterial);

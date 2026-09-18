@@ -12,6 +12,8 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Skrip utilitas Node (seed data demo), bukan bagian bundle aplikasi:
+    "scripts/**",
   ]),
 ]);
 

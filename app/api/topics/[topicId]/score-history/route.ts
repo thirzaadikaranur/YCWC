@@ -1,7 +1,7 @@
 import { NextResponse, type NextRequest } from 'next/server';
-import { withAuth } from '@/lib/api/auth';
-import { fetchTopic, toScoreHistoryPoint, type ScoreHistoryRow } from '@/lib/api/db';
-import { ApiError } from '@/lib/api/errors';
+import { withAuth } from '@/lib/server/auth';
+import { fetchTopic, toScoreHistoryPoint, type ScoreHistoryRow } from '@/lib/server/db';
+import { ApiError } from '@/lib/server/errors';
 import type { GetScoreHistoryResponse, ScoreHistoryPoint } from '@/types';
 
 export async function GET(

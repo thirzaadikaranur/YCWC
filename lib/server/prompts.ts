@@ -1,5 +1,5 @@
 import type { ChatMessage } from '@/types';
-import type { UnderstandingMapRow } from '@/lib/api/db';
+import type { UnderstandingMapRow } from '@/lib/server/db';
 
 export interface LlmPrompt {
   system: string;

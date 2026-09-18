@@ -1,6 +1,6 @@
-import type { AuthContext } from '@/lib/api/auth';
-import { readSupabaseEnv } from '@/lib/api/auth';
-import { ApiError } from '@/lib/api/errors';
+import type { AuthContext } from '@/lib/server/auth';
+import { readSupabaseEnv } from '@/lib/server/auth';
+import { ApiError } from '@/lib/server/errors';
 import type { UserPreferences } from '@/types';
 
 const DEFAULT_QUIZ_QUESTION_COUNT = 5;
