@@ -59,7 +59,7 @@ export function UnderstandingPanel({
   return (
     <aside
       id="understanding-panel"
-      className={`z-30 shrink-0 overflow-hidden border-l border-surface/10 bg-border/[0.34] transition-[width,opacity,transform] duration-[260ms] ease-out max-md:fixed max-md:bottom-0 max-md:right-0 max-md:top-[68px] max-md:w-[min(89vw,360px)] max-md:shadow-[-18px_0_42px_rgba(8,10,28,0.28)] ${isOpen ? "w-[338px] opacity-100 max-md:translate-x-0" : "w-0 border-l-transparent opacity-0 max-md:translate-x-full"}`}
+      className={`z-30 shrink-0 overflow-hidden border-l border-surface/10 bg-border/[0.34] transition-[width,opacity,transform] duration-[260ms] ease-out max-md:fixed max-md:bottom-0 max-md:right-0 max-md:top-[68px] max-md:w-full max-md:border-l-0 max-md:bg-bg ${isOpen ? "w-[338px] opacity-100 max-md:translate-x-0" : "w-0 border-l-transparent opacity-0 max-md:translate-x-full"}`}
       aria-label="Peta Pemahaman"
       aria-hidden={!isOpen}
       inert={!isOpen}
