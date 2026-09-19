@@ -3,7 +3,7 @@ import { readSupabaseEnv } from '@/lib/server/auth';
 import { ApiError } from '@/lib/server/errors';
 import type { UserPreferences } from '@/types';
 
-const DEFAULT_QUIZ_QUESTION_COUNT = 5;
+const DEFAULT_QUIZ_QUESTION_COUNT = 10;
 const MIN_QUIZ_QUESTION_COUNT = 1;
 const MAX_QUIZ_QUESTION_COUNT = 20;
 const DISPLAY_NAME_MAX_LENGTH = 60;

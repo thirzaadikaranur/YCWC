@@ -170,23 +170,30 @@ function formatJoinedAt(isoDate: string | undefined): string {
 
 export async function getCurrentUser(): Promise<UserAccount> {
   const supabase = createClient();
-  const { data, error } = await supabase.auth.getUser();
+  const { data: sessionData } = await supabase.auth.getSession();
+  let user = sessionData.session?.user ?? null;
 
-  if (error || !data.user) {
-    throw new ApiError(
-      "Sesi login tidak valid atau kedaluwarsa. Silakan login ulang.",
-      401,
-    );
+  if (!user) {
+    const { data, error } = await supabase.auth.getUser();
+
+    if (error || !data.user) {
+      throw new ApiError(
+        "Sesi login tidak valid atau kedaluwarsa. Silakan login ulang.",
+        401,
+      );
+    }
+
+    user = data.user;
   }
 
   const metadataName =
-    typeof data.user.user_metadata?.displayName === "string"
-      ? data.user.user_metadata.displayName
-      : typeof data.user.user_metadata?.display_name === "string"
-        ? data.user.user_metadata.display_name
+    typeof user.user_metadata?.displayName === "string"
+      ? user.user_metadata.displayName
+      : typeof user.user_metadata?.display_name === "string"
+        ? user.user_metadata.display_name
         : null;
 
-  let displayName = metadataName ?? data.user.email?.split("@")[0] ?? "Pelajar";
+  let displayName = metadataName ?? user.email?.split("@")[0] ?? "Pelajar";
 
   try {
     const preferences = await getPreferences();
@@ -197,7 +204,7 @@ export async function getCurrentUser(): Promise<UserAccount> {
 
   return {
     displayName,
-    email: data.user.email ?? "",
-    joinedAt: formatJoinedAt(data.user.created_at),
+    email: user.email ?? "",
+    joinedAt: formatJoinedAt(user.created_at),
   };
 }

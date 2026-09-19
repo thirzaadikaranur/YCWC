@@ -312,7 +312,7 @@ Preferensi akun disimpan di `user_metadata` Supabase Auth (lihat
 {
   displayName: string;
   showDiagnosticPrompt: boolean;    // default true
-  defaultQuizQuestionCount: number; // default 5
+  defaultQuizQuestionCount: number; // default 10, rentang 1-20
 }
 ```
 

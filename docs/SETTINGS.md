@@ -44,8 +44,9 @@ terpisah.
   (default ON) — kontrol langsung atas field `shouldSuggestDiagnostic` yang
   sudah ada di `API_CONTRACT.md`. User yang merasa ajakan ini mengganggu
   bisa mematikannya.
-- **(Opsional) Jumlah soal default per sesi kuis** — dropdown 5/10, default
-  5. Kalau waktu mepet, skip ini dan hardcode 5 saja di backend, tidak
+- **(Opsional) Jumlah soal default per sesi kuis** — dropdown preset
+  5/10/15/20 dengan opsi "Jumlah lain..." untuk angka custom 1–20, default
+  10. Kalau waktu mepet, skip ini dan hardcode 10 saja di backend, tidak
   perlu jadi setting.
 - **Ringkasan singkat (read-only)** — "Kamu sudah mempelajari N topik,
   rata-rata pemahaman keseluruhan X%". Dihitung dari data yang SUDAH ADA
@@ -95,7 +96,7 @@ terpisah.
 interface UserPreferences {
   displayName: string;
   showDiagnosticPrompt: boolean; // default true
-  defaultQuizQuestionCount: number; // default 5, opsional — boleh skip
+  defaultQuizQuestionCount: number; // default 10, rentang 1-20
 }
 ```
 
@@ -140,7 +141,7 @@ sisipkan ajakan apa pun meski topik masih baru.
 Urutan boleh dipangkas, dari paling aman ke paling penting dipertahankan:
 1. Tombol "Hapus Akun" — paling aman dipangkas duluan (fitur bonus)
 2. Ringkasan singkat statistik di kategori Belajar — nice-to-have, bukan inti
-3. Jumlah soal kuis default (UI-nya) — hardcode 5 di backend, skip settingnya
+3. Jumlah soal kuis default (UI-nya) — hardcode 10 di backend, skip settingnya
 4. Toggle "Tampilkan ajakan diagnostic" — hardcode selalu ON, skip togglenya
 5. Kategori "Belajar" secara keseluruhan — kalau dipangkas semua, cukup
    sisakan Umum + Akun saja
