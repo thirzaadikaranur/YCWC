@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef, useState } from "react";
+import type { CSSProperties } from "react";
 import { AppShell } from "@/components/AppShell";
 import { Composer } from "@/components/Composer";
 import { TopicConversation } from "@/components/TopicConversation";
@@ -40,7 +41,10 @@ export function TopicPage({ topicId }: TopicPageProps) {
       panelOpen={panelOpen}
       onTogglePanel={() => setPanelOpen((current) => !current)}
     >
-      <div className="flex min-h-0 flex-1 flex-col">
+      <div
+        className="flex min-h-0 flex-1 flex-col"
+        style={{ "--panel-offset": panelOpen ? "338px" : "0px" } as CSSProperties}
+      >
         <div className="flex min-h-0 flex-1 overflow-hidden">
           <TopicConversation
             topicTitle={topicTitle}

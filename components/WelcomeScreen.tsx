@@ -8,10 +8,10 @@ interface WelcomeScreenProps {
   onSelectMode: (mode: ChatMode) => void;
 }
 
-const modes: { mode: ChatMode; label: string; featured?: boolean }[] = [
+const modes: { mode: ChatMode; label: string }[] = [
   { mode: "ringkasan", label: "Ringkas materi" },
   { mode: "kuis", label: "Buat kuis" },
-  { mode: "reverse_bot", label: "Jelaskan ke saya", featured: true },
+  { mode: "reverse_bot", label: "Jelaskan ke saya" },
   { mode: "qa", label: "Tanya bebas" },
 ];
 
@@ -29,16 +29,13 @@ export function WelcomeScreen({ selectedMode, onSelectMode }: WelcomeScreenProps
         <div className="flex max-w-[620px] flex-wrap justify-center gap-2" role="group" aria-label="Mulai belajar dengan cepat">
           {modes.map((item) => {
             const selected = selectedMode === item.mode;
-            const defaultStyle = item.featured
-              ? "border-surface/30 bg-surface/[0.08] text-surface"
-              : "border-surface/[0.16] bg-surface/[0.055] text-surface/80 hover:border-surface/30 hover:bg-surface/[0.11] hover:text-surface";
-            const selectedStyle = selected
+            const chipStyle = selected
               ? "-translate-y-px border-accent bg-accent/10 text-[#F3AD9B] hover:bg-accent/18"
-              : "";
+              : "border-surface/[0.16] bg-surface/[0.055] text-surface/80 hover:bg-surface/[0.1] hover:text-surface";
             return (
               <button
                 key={item.mode}
-                className={`min-h-10 rounded-full border px-3.5 py-2 text-[0.74rem] font-semibold transition-colors ${defaultStyle} ${selectedStyle}`}
+                className={`min-h-10 rounded-full border px-3.5 py-2 text-[0.74rem] font-semibold transition-colors ${chipStyle}`}
                 type="button"
                 aria-pressed={selected}
                 onClick={() => onSelectMode(item.mode)}

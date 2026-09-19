@@ -98,7 +98,7 @@ export function Composer({ placeholder, isSubmitting = false, onSubmit }: Compos
     Boolean(value.trim() || attachment?.text);
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 z-20 bg-gradient-to-b from-bg/0 via-bg/85 to-bg px-3 pb-3 pt-8 transition-[left] duration-[220ms] ease-out md:left-[var(--sidebar-offset)] md:px-[22px] md:pb-[22px]">
+    <div className="fixed bottom-0 left-0 right-0 z-20 bg-gradient-to-b from-bg/0 via-bg/85 to-bg px-3 pb-3 pt-8 transition-[left,right] duration-[220ms] ease-out md:left-[var(--sidebar-offset)] md:right-[var(--panel-offset,0px)] md:px-[22px] md:pb-[22px]">
       <div className="mx-auto w-full max-w-[820px]">
         {attachment && (
           <div className="mx-auto mb-2 w-full max-w-[650px]">
